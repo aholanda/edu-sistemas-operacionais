@@ -1,0 +1,189 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+
+\author{Adriano J. Holanda}
+\title{E/S: Dispositivos}
+\date{13 de novembro de 2012}
+
+\begin{document}
+
+\frame{\maketitle}
+
+\section{Introdução}
+
+\begin{frame}{Entrada e Saída: E/S}  
+  \input{../img/system-architecture}
+\end{frame}
+
+\begin{frame}{Subsistema de entrada e saída}
+
+{\small Fonte:~\cite{ufrgs2008}}
+\begin{center}
+  \begin{tikzpicture}[layer/.style={font=\small,minimum height=1cm,minimum width=8cm,draw},
+    driver/.style={minimum height=1cm, align=center,font=\footnotesize,text width=1.25cm,draw},
+    coda/.style={<->,>=latex}]
+    
+    \node[layer] (userlevel)  {E/S: nível de usuário};    
+    \draw[dashed] (userlevel.west)+(-.25,-.65) -- +(8cm,-.65);
+    \draw[coda] (userlevel.west)+(-.25,-.65) -- +(-.25,-4.45cm);
+    
+    \draw[coda] (userlevel.east)+(.25,.5) -- +(.25,-4.45cm);
+
+    \node[layer] (io0) [below of=userlevel,yshift=-.25cm] {E/S independente do dispositivo};
+    \node[layer,fill=yellow] (api) [below of=io0,yshift=-.25cm] {Interface padrão para {\em drivers} de dispositivo (API)};
+    
+    \foreach \x/\l in {-2/driver disco,-1/driver USB,0/driver rede,1/$\ldots$,2/driver teclado} {
+      \node[driver] (driver\x) [below of=api, xshift=1.6*\x cm, yshift=-.25cm] {\l};
+    }
+    \node[white, fill=black, layer] (hardware) [below of=driver0, yshift=-.25cm] {Hardware};
+
+    \node[rotate=90] [left of=driver-2,yshift=1.5cm,xshift=2.25cm] {Sistema operacional};
+    \node [rotate=-90] [right of=io0,yshift=4.5cm,xshift=-1cm] {Software};
+
+  \end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Classificação das camadas de E/S}
+  
+  \begin{block}<1->{Dispositivos de caracter}
+    São dispositivos cujo fluxo de dados ocorre de forma sequencial,
+    um byte após o outro.\\
+    \smallskip
+    Exemplo: teclado, porta serial.
+  \end{block}
+
+
+  \begin{block}<2>{Dispositivos de bloco}
+    Os dados são acessados de forma aleatória em pedaços de 
+    tamanho fixo chamado blocos.\\
+    \smallskip
+    Exemplo: Disco rígido, memória flash, disquete, leitor de Blu-ray.    
+
+  \end{block}
+
+\end{frame}
+
+\section{Dispositivos de bloco}
+
+\begin{frame}{Dispositivos de bloco}
+  {Conceitos essenciais}
+  
+  \begin{itemize}
+    \item A menor unidade endereçável em um dispositivo de bloco é um \alert{setor}.
+    \item O tamanho mais comum do setor é \alert{512} bytes. Porém, alguns dispositivos
+      possuem tamanhos diferentes, por exemplo, muitos CD-ROMs possuem setores de 2-KB.
+    \item Os blocos são armazenados temporariamente em um zona de memória chamada 
+      \alert{\em buffer}, para ajuste entre as diferenças na velocidade de transferência entre
+      as camadas dos subsistemas. \\
+      \smallskip
+      {\small Por exemplo, se a placa de rede suporta envio de blocos 
+      de 4-KB, e o SO necessita enviar 64-KB, estes são armazenados no {\em buffer} até
+      o término da transmissão.}
+
+    \end{itemize}
+        
+\end{frame}
+
+\frame{\author{}\title{Dispositivos de Bloco: \\Disco Rígido}\date{}\maketitle}
+
+\begin{frame}{Busca em disco rígido}
+\begin{center}
+\input{../../cod/io/img/platter}
+\end{center}
+\end{frame}
+
+\begin{frame}{Escalonamento das requisições de E/S}
+  
+  \begin{itemize}
+  \item O \alert{escalonador de E/S} gerencia a fila de requisições
+    dos dispositivos de bloco, decidindo qual requisição é despachada,
+    com o objetivo de maximizar a performance global de E/S do
+    sistema.
+  \item O escalonadores de E/S realizam 2 ações principais sobre as
+    requisições para minimizar as buscas:
+    \begin{itemize}
+    \item \alert{Fusão}: agrupamento de 2 ou mais requisições ao mesmo bloco;
+    \item \alert{Ordenação}: classifica as requisições de acordo com
+      algum critério.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Algoritmos de escalonamento de E/S}{Disco rígido}
+  \footnotesize
+  \begin{enumerate}[<+-| alert@+>]
+  \item \alert{FCFS}({\em firt-come first-served}): as requisições são
+    atendidas conforme a ordem de chegada na fila;
+  \item \alert{SSTF} ({\em shortest seek time first}): as requisições
+    são atendidas de acordo com o menor tempo de acesso, e são
+    reordenadas constantemente, para levar em conta a posição atual do
+    cabeçote, privilegiando os setores mais próximos à posição
+    corrente na reordenação da fila de requisições.
+    {\color{gray}\small Desvantagem: Suscetível à postergação
+      indefinida ({\em starvation}).}
+  \item \alert{SCAN}: é uma variação do SSTF que se diferencia por
+    adotar um sentido de varredura preferencial, como por exemplo do
+    mais interno para o mais externo. Ao atingir o mais interno,
+    inverte-se o sentido e novas requisições no sentido contrário são
+    atendidas na próxima varredura. Também é conhecido como algoritmo
+    do \alert{elevador}.
+  \item \alert{C-SCAN}: variação do SCAN que se diferencia por adotar
+    o sistema de varredura em somente uma direção. Por exemplo, se o
+    cabeçote atingir o cilindro mais interno, é então reposicionado
+    no cilindro mais externo e a varredura é realizada novamente.
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Exercício}
+
+  \begin{enumerate}
+  \item Dada as seguintes sequências de requisições para um 
+    disco com $100$ trilhas:
+    \begin{center}
+      $44, 20, 95, 4, 50, 52, 47, 61, 87, 25$,
+    \end{center}
+    onde a posição atual dos cabeçotes é $50$, calcule a
+    quantidade de movimentos dos cabeçotes para atender às
+    requisições utilizando os seguintes algoritmos:
+    \begin{enumerate}
+    \item FCFS;
+    \item SSTF;
+    \item SCAN;
+    \item C-SCAN.
+    \end{enumerate}
+  \end{enumerate}
+  
+\end{frame}
+
+\begin{frame}
+  
+  \begin{thebibliography}{5}
+  \bibitem[Oliveira, 2008]{ufrgs2008}
+    {\em Sistemas Operacionais}.
+    \newblock Rômulo Silva de Oliveira, Alexandre da Silva Carissimi e 
+    Simão Sirineo Roscani.
+    \newblock Editora Bookman, 2008.
+  
+  \bibitem[LKD3]{lkd3} 
+    {\em Linux Kernel Development}.
+    \newblock Robert Love.
+    \newblock Addison Wesley Publisher, 2010.
+
+    \bibitem[Garrido, 2008]{garrido2008}
+      {\em Principles of Modern Operating Systems}.
+      \newblock José M.\ Garrido, Richard Schlesinger.
+      \newblock Jones and Bartlett Publishers, 2008.
+
+  \end{thebibliography}
+
+\end{frame}
+
+
+\end{document}

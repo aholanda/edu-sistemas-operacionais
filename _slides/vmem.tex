@@ -1,0 +1,139 @@
+
+%%%%%%%%%%%%%%%%%%%% VIRTUAL MEMORY %%%%%%%%%%%%%%%%%%%%
+
+\lecture{Memória Virtual}{mem:virtual}
+
+\frame{\title{\insertlecture}\maketitle}
+
+\transition{Paginação}{mem:paging}
+
+%[rlove] pg 231
+\begin{frame}{Páginas}
+
+  O SO lida com \alert{páginas} de memória física ao invés de bytes
+  ou palavras. As páginas são gerenciadas pela MMU ({\small {\em
+      Memory Management Unit} -- Unidade de Gerenciamento de
+    Memória}). O tamanho das páginas variam de acordo com a
+  arquitetura do processador, mas para a maioria das arquiteturas
+  temos:
+
+\begin{itemize}
+\item 32 bits: páginas de 4KB;
+\item 64 bits: páginas de 8KB.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Paginação}
+\centering
+\input{../img/paging.tex}
+\end{frame}
+
+
+%\begin{frame}{Unidade de Gerenciamento de Memória \only<2>{com Buffer/Cache}}
+%\begin{center}
+
+%\begin{tikzpicture}
+%  \tikzset{every node/.style={draw,minimum height=0.5cm, minimum
+%      width=1.5cm,font={\textbf\footnotesize}}, every
+%    path/.style={->,draw,>=latex}, lebal/.style={text width=2.5cm,
+%      align=center, font=\scriptsize,draw=white}}
+
+%  \node[fill=gray!50,draw] (proc) {processador}; 
+%  \node[] (tlb) [right of=proc,xshift=2cm,color=white,fill=red,draw=red] {TLB};
+%  \node[minimum height=1cm,color=white,fill=green!40!black,draw=green!40!black]
+%  (mmu) [below of=tlb,yshift=-1.25cm] {MMU};
+
+%  \path[<->] (proc) -> (tlb);
+%  \path[->,color=green!50!black] (tlb.south east) -> (mmu.north east);
+%  \path[->,color=red!60!black] (mmu.north west) -> (tlb.south west);
+
+%  \foreach \y in {0,1,2,3,4,5} {
+%    \node[fill=yellow!20] (page\y) [right
+%    of=mmu,yshift=-5mm*\y,xshift=4cm] 
+%    {\scriptsize p\'agina \y};
+%  }
+%  \node[lebal] [below of=page5,yshift=.25cm] {Tabela de páginas};
+
+%  \path[<->,color=blue!50!black] (mmu.east) -> (page1.west);
+
+%  \node[lebal] (mmulabel) [below of=mmu] 
+%  {\em \scriptsize MMU -- memory management unit};
+
+%  \node[lebal] [above of=tlb,yshift=-.25cm] 
+%  {\em \scriptsize TLB -- Translation Look-aside buffer};
+%\end{tikzpicture}
+
+%\end{center}
+
+%\end{frame}
+
+\section*{Algoritmos de substituição de páginas}
+
+\begin{frame}{Algoritmos de substituição de páginas}
+\begin{description}
+\item[FIFO ({\em First In First Out}):] a página a ser substituída
+  durante a paginação será sempre a mais antiga;
+\pause\item[Segunda chance:] parecido com o FIFO, porém, se o bit de
+  referência da primeira página for $1$, este é zerado e a página
+  colocada no fim da fila. Se for $0$, a página é imediatamente
+  substituída.
+\pause\item[Relógio:] parecido com o algoritmo de segunda chance, porém, as
+  páginas são mantidas em uma lista circular, com um ponteiro
+  percorrendo a lista. Se houver necessidade de substituição, a página
+  apontada é analisada, se o bit de referência for $0$, esta é
+  escolhida, senão, o bit de referência é zerado e ponteiro continua
+  atá a próxima página em que o bit seja $0$.
+\pause\item [LRU ({\em Last Recently Used}):] a página a ser substituída é a
+  última utilizada recentemente.
+\end{description}
+\end{frame}
+
+% Fonte: https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/9_VirtualMemory.html
+% 9.6 Thrashing
+
+% If a process cannot maintain its minimum required number of frames,
+% then it must be swapped out, freeing up frames for other
+% processes. This is an intermediate level of CPU scheduling.  But what
+% about a process that can keep its minimum, but cannot keep all of the
+% frames that it is currently using on a regular basis? In this case it
+% is forced to page out pages that it will need again in the very near
+% future, leading to large numbers of page faults.  A process that is
+% spending more time paging than executing is said to be thrashing.
+% 9.6.1 Cause of Thrashing
+
+% Early process scheduling schemes would control the level of
+% multiprogramming allowed based on CPU utilization, adding in more
+% processes when CPU utilization was low.  The problem is that when
+% memory filled up and processes started spending lots of time waiting
+% for their pages to page in, then CPU utilization would lower, causing
+% the schedule to add in even more processes and exacerbating the
+% problem! Eventually the system would essentially grind to a halt.
+% Local page replacement policies can prevent one thrashing process from
+% taking pages away from other processes, but it still tends to clog up
+% the I/O queue, thereby slowing down any other process that needs to do
+% even a little bit of paging ( or any other I/O for that matter. )
+
+% Figure 9.18 - Thrashing
+
+% To prevent thrashing we must provide processes with as many frames as
+% they really need "right now", but how do we know what that is?  The
+% locality model notes that processes typically access memory references
+% in a given locality, making lots of references to the same general
+% area of memory before moving periodically to a new locality, as shown
+% in Figure 9.19 below. If we could just keep as many frames as are
+% involved in the current locality, then page faulting would occur
+% primarily on switches from one locality to another. ( E.g. when one
+% function exits and another is called. )
+
+
+\begin{frame}{\em Trashing}
+
+  Quando um processo não possui o número de quadros ({\em frames}) de
+  memória necessários a cada escalonamento para sua execução, o
+  processo passa a maior parte do tempo esperando pelas substituição
+  de páginas do que em execução. Este efeito é chamado de {\em
+    trashing}.
+
+\end{frame}
+

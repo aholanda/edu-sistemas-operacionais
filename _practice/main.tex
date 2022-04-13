@@ -1,0 +1,40 @@
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
+
+\documentclass[]{article}
+
+\usepackage{hyperref}
+\usepackage{listings}
+\lstset{language=C,inputencoding=utf8,basicstyle=\footnotesize, 
+    flexiblecolumns=true, numbers=left, numberstyle=\tiny\color{gray}, 
+    commentstyle=\scriptsize\color{black!50},mathescape}
+  \usepackage{xcolor}
+  \usepackage{enumerate}
+  
+\def\thread{{\em thread}}
+\def\CMD#1{\medskip\noindent{\tt\$ #1}\\}%
+
+\begin{document}
+
+\title{Roteiro de aula prática de Sistemas Operacionais II}
+
+\def\warning{Todos os programas devem ser executados pelo terminal do
+  Linux. Qualquer dúvida a respeito da sintaxe de programas disponíveis
+  no Linux, execute {\tt man nome\_programa\ \#.}}
+
+\date{\today}
+\input proc
+\input locking
+\input mm
+\input io
+\input fs
+
+\input sched
+\input ipc
+\input kernel
+
+\end{document}
+

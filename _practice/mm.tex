@@ -1,0 +1,71 @@
+\maketitle
+
+\warning
+
+\section*{Gerenciamento de Memória}
+
+\paragraph{1.  Espaço de endereçamento e segmentação.} Baixe o código 
+
+\bigskip
+
+\CMD{wget https://raw.githubusercontent.com/ajholanda/edu-os/master/mm/address-space.c}
+
+\noindent e compile-o usando o comando
+
+\bigskip
+
+\CMD{gcc -g -o addr address-space.c$\quad$ \#.}
+
+\noindent Execute-o em segundo plano e verifique o espaço de
+endereçamento do processo pelos comandos:
+
+\bigskip
+
+\CMD{./addr \&}
+\CMD{pmap <PID>}
+\CMD{nm addr}
+
+\noindent onde {\tt PID} é o indentificador do processo.
+
+\noindent Escreva o endereço virtual, em hexadecimal e decimal, dos
+seguintes elementos:
+
+\begin{enumerate}[a)]
+\item Endereço da variável global {\tt glob};
+\item Endereço da variável global {\tt gloc};
+\item Endereço da função {\tt main()};
+\item Endereço da função {\tt loop()};
+\item Endereço da variável local de {\tt loop()} chamada {\tt loc};
+\item Endereço para o qual a variável global {\tt gloc} aponta.
+\end{enumerate}
+
+\hrule
+
+\paragraph{2. Memória virtual.}~Verifique a estatística de uso da memória virtual
+usando o comando 
+
+\bigskip
+
+\CMD{vmstat 10 5}
+
+\noindent onde 5 é o número de estatísticas a serem geradas e 10 é o
+intervalo entre elas em segundos. Obtenha os seguintes dados:
+
+\begin{enumerate}[a)]
+\item  Faça uma tabela contendo os valores
+  de memória virtual usada, memória livre, memória ativa e memória
+  inativa. 
+\item Calcule a média e o desvio-padrão para cada campo.
+\end{enumerate}
+
+\noindent Use o comando
+
+\bigskip
+
+\CMD{man vmstat}
+
+\noindent para saber o significado da saída do programa.
+
+%% Local variables:
+%% TeX-master: main
+%% End:

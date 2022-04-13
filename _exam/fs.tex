@@ -1,0 +1,51 @@
+\maketitle
+\section*{Sistemas de Arquivos}
+
+\exercise~O que é o sistema de arquivos virtual dos SOs baseados em
+{\sc Unix}?  Descreva as suas principais entidades, destancando a
+diferença entre elas.
+
+\exercise~Dê um exemplo de chamada de sistema que utilize o sistema
+virtual para abrir um arquivo. Há diferenças entre esta chamada se o
+arquivo estiver armazenado em um sistema de arquivos {\sc ntfs}, {\tt
+  ext4} ou {\sc hfs} ({\em Hierarchical File System})?
+
+\exercise~Explique como os sistemas de arquivos podem evitar que haja 
+corrupção das entidades devido à ocorrência de falhas no SO.
+
+\exercise~Como a fragmentação dos arquivos na memória secundária pode
+degradar a performance do sistema de arquivos.
+
+\exercise~O sistema de arquivos FAT32 usa 32 bits para a identificação
+do {\em cluster}. Para um disco onde o tamanho de cada setor é 512
+bytes, complete a tabela abaixo com os valores do tamanho padrão para
+cada cluster, de acordo com o tamanho da partição para o FAT32.
+
+\begin{center}
+  \begin{tabular}[ht]{l|l}\hline
+    \bf tamanho da partição & \bf tamanho padrão do {\em cluster} \\\hline
+    <32MB & não suportado\\\hline
+    32MB--64MB & 512 bytes\\\hline
+    64MB--128MB & 1KB\\\hline
+    128MB--256MB & 2KB\\\hline
+    256MB--8GB & 4KB\\\hline
+    8GB--16GB & 8KB\\\hline
+    16GB--32GB & 16KB\\\hline
+    >32GB & não suportado \\\hline
+  \end{tabular}
+\end{center}
+\def\VFS{
+\question[5,0] Responda às seguintes questões baseadas no sistemas de arquivos virtual:
+
+\begin{enumerate}[a)]
+\item O que é o sistema de arquivos virtual dos SOs baseados em {\sc
+    Unix}?
+\item Descreva as suas principais entidades, destancando a diferença
+  entre elas.
+\item Dê um exemplo de chamada de sistema que utilize o sistema
+  virtual para abrir um arquivo.
+\item Há diferenças entre esta chamada se o arquivo estiver armazenado
+  em um sistema de arquivos {\sc ntfs}, {\tt ext4} ou {\sc hfs} ({\em
+    Hierarchical File System})?
+\end{enumerate}
+}

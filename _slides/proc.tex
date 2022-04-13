@@ -1,0 +1,122 @@
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: main
+%%% End: 
+
+
+\lecture{Gerenciamento de Processos}{proc}
+
+\title{\so: \insertlecture}
+\frame{\titlepage}
+
+\section{\insertlecture}
+
+\subsection{Estados dos processos}
+
+\begin{frame}
+\frametitle{\only<1,2>{O que é um processo} 
+  \only<3->{Bloco de controle do processo \only<4>{\alert{no Linux}}}}
+\only<3->{\framesubtitle{{\em Process Block Control (PCB)}}}
+
+\only<1,2>{Um processo é um programa (código objeto armazenado em alguma mídia)
+em execução.\bigskip}
+
+
+\begin{columns}
+\begin{column}{6cm}
+
+\only<2->{
+\begin{small}
+Processo é composto por:
+
+\begin{itemize}
+
+\item código do programa em execução
+\item arquivos abertos
+\item sinais pendentes
+\item dados internos do núcleo do SO
+\item estado do processador
+\item espaço de endereço
+\item uma ou mais {\em threads} de execução
+\item seção de dados contendo variáveis globais
+
+\end{itemize}
+
+\end{small}
+}
+
+\end{column}
+
+\only<3>{
+
+\begin{column}{5cm}
+
+\begin{center}
+
+  \scriptsize{Bloco de Controle do Processo}
+  
+  \smallskip
+
+  \input{../_img/pcb}
+  
+
+\end{center}
+
+\end{column}
+} % only<2>
+
+\only<4>{
+  \begin{column}{5.5cm}
+\begin{block}{\footnotesize Bloco de Controle do Processo no \alert{Linux}}
+
+   %\includegraphics[scale=0.5]{\imgdir/proc_task_struct.pdf}
+\end{block}
+ \end{column}
+
+} % only<2>
+
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Estados de um processo}
+  
+\begin{block}{Estados}
+  \begin{description}
+  \item[Novo] O processo está sendo criado.
+  \item[Executando] As instruções estão sendo executadas.
+  \item[Esperando] O processo está esperando pela ocorrência de algum
+    evento (como um término de E/S ou uma interrupção).
+  \item[Pronto] O processo está esperando para ser designado a um processador.
+  \item[Terminado] O processo terminou sua execução.
+  \end{description}
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Transição dos estados de um processo}
+  
+	\input{../_img/states}
+
+\end{frame}
+
+\begin{frame}{Sequência dos PCBs}
+
+\begin{center}
+	\includegraphics[scale=0.45]{../_img/pcb-sequence}
+\end{center}
+\end{frame}
+
+% \begin{frame}{Exemplos e aplicações}
+
+%   \begin{itemize}
+%     \item \href{http://lxr.linux.no/\#linux+v2.6.37.1/include/linux/sched.h\#L1182}{Analisar os membros da estrutura de {\tt task\_struct}}
+%   \item Monitoramento de processos usando as ferramentas do Linux {\tt
+%       ps}, {\tt top}, {\tt atop}, {\tt htop}.
+%   \item \href{http://adrianoholanda.org/edu/file.php/3/codigo_fonte/proc_cria_posix.c}{Criação
+%       de processos utilizando a API Posix.}
+%   \item \href{http://adrianoholanda.org/edu/file.php/3/codigo_fonte/proc_cria_win32.c}{Criação
+%       de processos usando chamadas de sistema do Windows.}
+%   \end{itemize}
+  
+% \end{frame}

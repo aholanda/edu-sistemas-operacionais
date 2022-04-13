@@ -1,0 +1,24 @@
+
+\def\IOSCHED{
+  \question[5,0]~Dada as seguintes sequências de requisições para um
+  disco com $50$ trilhas:
+
+  \reinitrand[counter=rand,first=1,last=50]
+  \begin{center}
+    $\R, \R, \R, \R, \R, \R, \R, \R, \R, \R, \R, \R, \R, \R$
+    % TEMPLATE $35\ 8\ 39\ 18\ 6\ 49\ 16\ 5\ 30\ 12\ 1$
+  \end{center}
+  onde a posição atual dos cabeçotes é $25$, calcule a quantidade de
+  movimentos dos cabeçotes em função das trilhas para atender às
+  requisições utilizando os seguintes algoritmos:
+
+  \begin{parts}
+  %\item FCFS;
+  \part SSTF (elevador);
+  \part SCAN.
+  \part C-SCAN.
+  \end{parts} 
+  
+  Faça um esboço gráfico do deslocamento do cabeçote para atender às
+  requisições.
+}

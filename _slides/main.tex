@@ -1,0 +1,110 @@
+% Run
+% xelatex "\def\ishandout{1} \input{main.tex}"
+% to disable transitions
+
+\ifdefined\ishandout
+  \documentclass[handout]{beamer}
+\else
+  \documentclass[]{beamer}
+\fi
+ \usecolortheme{beaver}
+\setbeamercovered{highly dynamic}
+
+% Dependencies
+\usepackage{fontspec} % use XeLaTeX
+\usepackage[]{polyglossia}
+\setdefaultlanguage{brazil}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,anchorcolor=blue,urlcolor=blue}
+\usepackage{pgf,tikz} % Draw figures
+\usetikzlibrary{arrows,automata,calc,chains,circuits,graphs,positioning,shapes.gates.logic.US,shapes,trees}
+\usepackage{circuitikz}
+  \usepackage{listings}
+  \lstset{language=C,inputencoding=utf8,basicstyle=\footnotesize, 
+    flexiblecolumns=true, numbers=left, numberstyle=\tiny\color{gray}, 
+    commentstyle=\scriptsize\color{black!50},mathescape}
+  
+  \usepackage{ifthen} % \ifthenelse
+  \usepackage{animate}
+
+  % FONTS
+  \font\fiverm=cmr5
+  \font\ninerm=cmr9
+
+  % Definitions
+  \author{Adriano J. Holanda}%\\{\scriptsize \url{http://holanda.xyz}}}
+  \def\array{vetor}
+  \def\bigO#1{\mathcal{O}(#1)}
+  \def\bug#1{{\it bug#1\/}}
+  % C letter
+  \font\ninerm=cmr9
+  \let\mc=\ninerm
+  \def\CEE{{\mc C\spacefactor1000}}
+
+  \def\boxset{
+    \tikzset{box/.style={rectangle,minimum width=.5cm,draw},
+      index/.style={minimum width=.5cm}}
+  }
+
+  % only title frames
+  \def\onlytitleframe#1{\author{}\date{}\title{#1}\maketitle}
+
+  % \usepackage{pdftexcmds} % \pdf@strcmp \pdf@filemoddate
+  % \newcommand{\executeiffilenewer}[3]{%
+  %   \ifnum\pdf@strcmp{\pdf@filemoddate{#1}}%
+  %   {\pdf@filemoddate{#2}}>0%
+  %   {\immediate\write18{#3}}\fi%
+  % }
+  % includesvg[includegraphics args]{file} command (linux-version)
+  % \newcommand{\includesvg}[2][]{%
+  %   \executeiffilenewer{#2.svg}{#2.pdf}{%
+  %     /usr/bin/inkscape -z -C --file="#2.svg" --export-pdf="#2.pdf" > /tmp/#2.log}%
+  %   \ifthenelse{\equal{#1}{}}{%
+  %     \includegraphics{#2}}{%
+  %     \includegraphics[#1]{#2}}%
+  % }
+
+\def\lecturetitle#1#2{\title{{\large\bf#1}\\{\small [#2]}}}
+
+\def\transitionslide#1{\frame{\author{}\title{\LARGE#1}\date{}\maketitle}}
+
+  \def\shcmd#1{
+    \begingroup
+    \bigskip\color{gray}
+    {\tt \$~#1}
+    \bigskip
+    \endgroup
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% DEFINITIONS
+\def\so{{\sc SO}}
+\def\transition#1#2{\lecture{#1}{#2}\section{#1}
+  \frame{\author{}\date{}\institute{}\title{\insertlecture}\maketitle}}
+%%%% LISTINGS
+\lstset{language=C,basicstyle=\small}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\pgfdeclareimage[width=2.5cm]{keyboard}{../_img/teclado.png}
+\pgfdeclareimage[width=1.5cm]{processor}{../_img/processor.png}
+
+\newcounter{saveenumi}% save counter on enumerate across frames
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+\resetcounteronoverlays{saveenumi}
+
+\begin{document}
+\input proc
+\input thread
+\input sched
+\input sync
+\input deadlock
+\input mem
+\input address-space
+\input vmem
+\input io
+\input raid
+\input fs
+\input vfs
+\input ext4
+\input fs-win
+\end{document}

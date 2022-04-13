@@ -1,0 +1,18 @@
+
+\paragraph{Quest\~ao \ex{}. (1,0 ponto)}
+Qual das opera\c{c}\~oes abaixo n\~ao \'e atribui\c{c}\~ao dos drivers de
+dispositivos?
+
+\pgfkeyssetvalue{/driver/0}{\item Emitir comandos para dispositivos.}
+\pgfkeyssetvalue{/driver/1}{\item Definir como as funcionalidades 
+  do hardware devem ser utilizadas pelo sistema operacional ou aplicativo.}
+\pgfkeyssetvalue{/driver/2}{\item Interceptar interrupÃ§Ãµes e tratar erros.}
+\pgfkeyssetvalue{/driver/3}{\item Atuar como interface entre os dispositivos e o restante do sistema.}
+\pgfkeyssetvalue{/driver/4}{\item Definir quais funcionalidades do
+  hardware est\~ao dispon$\acute{i}$veis.}
+
+\begin{enumerate}[(a)]
+  \foreach \i in \thelist
+  {\pgfkeysvalueof{/driver/\i}}
+\end{enumerate}
+

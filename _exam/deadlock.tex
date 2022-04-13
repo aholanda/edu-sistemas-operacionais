@@ -1,0 +1,94 @@
+\section*{Deadlock (impasse)}
+
+\exercise~Durante a execução de 3 processos (ou threads) $P_1, P_2,
+P_3$, há 2 recursos $R_1, R_2$ a serem compartilhados. A notação
+$P_i\rightarrow R_j$ indica que o processo $i$ faz requisição do
+recurso $j$.  Faça o grafo de alocação de recursos e verifique se há
+ocorrência de deadlock (impasse) para as seguintes requisições:
+
+\begin{enumerate}[i)]
+\item  $P_1 \rightarrow R_2,\qquad P_2 \rightarrow R_2, \qquad P_1
+  \rightarrow R_1,\qquad P_2 \rightarrow R_1, \qquad P_3 \rightarrow
+  R_2.$
+
+\item  $P_2 \rightarrow R_1,\qquad P_1 \rightarrow R_1, \qquad P_2
+  \rightarrow R_2,\qquad P_1 \rightarrow R_2, \qquad P_3 \rightarrow
+  R_1.$
+\item  $P_1 \rightarrow R_2,\qquad P_2 \rightarrow R_1, \qquad P_1
+  \rightarrow R_1,\qquad P_2 \rightarrow R_2, \qquad P_3 \rightarrow
+  R_2.$
+
+\item  $P_2 \rightarrow R_2,\qquad P_2 \rightarrow R_1, \qquad P_1
+  \rightarrow R_1,\qquad P_1 \rightarrow R_2, \qquad P_3 \rightarrow
+  R_2.$
+
+\item  $P_1 \rightarrow R_1,\qquad P_2 \rightarrow R_2, \qquad P_1
+  \rightarrow R_2,\qquad P_2 \rightarrow R_1, \qquad P_3 \rightarrow
+  R_2.$
+
+\end{enumerate}
+
+\exercise~Para o fragmento de código a seguir, onde 2 threads tentam
+obter o bloqueio de 2 recursos, descreva as possíveis sequências de
+execução, verificando se há ocorrência de impasse ({\em deadlock}).
+
+\lstset{language=C,frame=tlr,
+commentstyle=\small\color{black!85}}
+
+\begin{lstlisting}
+  /* variáveis globais de controle da exclusão mútua */
+  mutex_t recurso1, recurso2; 
+\end{lstlisting}
+\lstset{frame=single}
+\begin{minipage}{.5\textwidth}
+    \begin{lstlisting}
+      /*  Thread 1 */
+     mutex_lock(&recurso1);
+      mutex_lock(&recurso2);
+      /**
+      * região crítica
+      */
+      mutex_unlock(&recurso2);
+      mutex_unlock(&recurso1);
+    \end{lstlisting}
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+    \begin{lstlisting}
+      /* Thread 2 */
+      mutex_lock(&recurso2);
+      mutex_lock(&recurso1);
+      /**
+      * região crítica
+      */
+      mutex_unlock(&recurso1);
+      mutex_unlock(&recurso2);
+    \end{lstlisting}
+\end{minipage}
+
+
+\def\DEADLOCK{
+  Explique também as situações que conduzem a um {\em deadlock} entre
+  processos e exemplifique utilizando um grafo de alocação de processos.
+}
+
+
+\question[2] Faça o grafo de alocação de recursos para as requisições
+das {\em threads} listadas a seguir, informando quando houver
+{\em deadlock}.
+
+\begin{enumerate}[a)]
+\item $T_0$ requisita $R_0$, $T_0$ requisita $R_1$,
+  $T_1$ requisita $R_1$, $T_1$ requisita $R_0$;
+
+\item $T_0$ requisita $R_0$, $T_1$ requisita $R_1$,
+  $T_1$ requisita $R_0$, $T_0$ requisita $R_1$;
+
+\item $T_0$ requisita $R_0$, $T_2$ requisita $R_1$,
+  $T_1$ requisita $R_1$, $T_1$ requisita $R_0$;
+  $T_0$ libera $R_0$, $T_2$ requisita $R_0$;
+  
+\item $T_0$ requisita $R_0$, $T_2$ requisita $R_1$,
+  $T_1$ requisita $R_1$, $T_1$ requisita $R_0$;
+  $T_0$ requisita $R_1$, $T_2$ requisita $R_0$.
+
+\end{enumerate}

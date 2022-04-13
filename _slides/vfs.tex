@@ -1,0 +1,81 @@
+
+\transition{Sistema de arquivos virtual}{fs:virtual}
+
+\title{\insertlecture}
+
+\begin{frame}{\insertlecture}{\only<1>{Definição}\only<2>{Entidades}}
+\small
+{\only<2>{\color{gray}}
+  É o sistema utilizado em sistemas baseados em {\sc Unix} para
+  padronizar as abstrações e operações dos diferentes sistemas de
+  arquivos com as chamadas de sistemas.
+}\bigskip
+
+\only<2>{
+  O sistema de arquivos virtual possue quatro entidades básicas:
+  
+  \begin{description}
+ \item[Superbloco]~estrutura que contém atributos do sistema de
+   arquivos e informações sobre os arquivos.
+ \item[Inode:]~estrutura de dados separada do arquivo que contém
+   atributos a respeito dos arquivos;
+ \item[Diretórios:]~recipiente de arquivos correlacionados ou outros
+   diretórios chamados subdiretórios;
+ \item[Arquivos:]~sequência ordenada de bytes;
+\end{description}
+}
+
+\end{frame}
+
+\begin{frame}{\insertlecture}{Portabilidade}
+
+Os sistemas de arquivos possuem interface de programação comum para
+melhorar a portabilidade do sistema. As principais operações são:
+
+\begin{itemize}
+\item {\tt open()}\item {\tt read()}\item {\tt write()}
+\item {\tt create()}\item {\tt delete()}
+\end{itemize}
+
+O funcionamento de cada função depende da entidade à qual a interface
+está sendo aplicada.
+
+\end{frame}
+
+
+\begin{frame}{\insertlecture}\small
+O sistema de arquivos virtual implementa a interface entre programas
+do espaço do usuário e o sistema de arquivos.
+
+% A Figura~\ref{fig:2io:vfs} mostra a chamada de sistema {\tt write()} que é
+% atendida pelo subsistema de arquivo virtual e utiliza a função
+% correspondente para o sistema de arquivos em que o meio físico está
+% formatado para gravação dos dados.
+
+\only<1>{\input{../_img/vfs}}
+
+\only<2>{\bigskip O sistema Microsoft\textsuperscript{\textregistered} Windows
+  não possui sistema de arquivos virtual, portanto somente sistemas de
+  arquivos que possuem suporte pelo sistema tais como FAT, FAT32 e
+  NTFS são acessíveis.}
+
+\end{frame}
+
+\begin{frame}{\insertlecture}{Interfaces com o meio físico}
+
+Chamada de função:
+\begin{tt}
+  int ret = write(fd, buf, len);\bigskip
+\end{tt}
+
+% representada abstratamente na Figura~\ref{fig:2io:vfs:sys} grava {\tt len}
+% bytes apontados por {\tt buffer} na posição atual do arquivo
+% representado pelo descritor de arquivos.
+
+% Note que a os dados são repassado para o sistema de arquivos virtual
+% que se encarrega de distribuir para a função adequada ao sistema de
+% arquivo no qual se deseja gravar.
+
+\input{../_img/vfs-sys}
+
+\end{frame}

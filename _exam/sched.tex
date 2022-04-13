@@ -1,0 +1,86 @@
+
+\question[1,5] Calcule o tempo de espera médio para os processos
+mostrados na tabela~\ref{tab:simple}, utilizando os seguintes
+algoritmos:
+
+\begin{enumerate}
+\item Primeiro a chegar, primeiro a ser servido (FIFO -- {\em first in
+  first out});
+\item Processo de menor tempo primeiro (SJF -- {\em shortest job first});
+\item Prioridade.
+\end{enumerate}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{cccc}\hline
+    \bf processo & \bf tempo & \bf prioridade \\\hline
+    $p_1$ & 4 & 3 \\
+    $p_2$ & 2& 2\\
+    $p_3$ & 2& 1\\
+    $p_4$ & 3& 2\\\hline
+  \end{tabular}
+  \caption{Tempo de execução e prioridade dos processos para o exercício.}
+  \label{tab:simple}
+\end{table}
+
+\question[2,5] Considere dois
+processos que possuem 4 ciclos, 2 de processador (CPU) e 2 de
+entrada/saída  (E/S) a serem executados em um sistema, conforme mostrado na
+tabela~\ref{tab:ioproc}. A E/S está relacionada à requisição de
+leitura ou escrita em um único disco rígido.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|cc|cc}\hline
+    & ciclo 1 & & ciclo 2 &  \\\hline
+    \bf processo & \bf CPU & \bf disco & \bf CPU & \bf disco \\\hline
+    $p_1$ & 16 & 10 & 8 & 10  \\
+    $p_2$ & 3 & 30 & 5 & 15 \\\hline
+  \end{tabular}
+  \caption{Tabela contendo os tempos de execução de 2 processos de 2
+    ciclos cada.}
+  \label{tab:ioproc}
+\end{table}
+
+Utilizando o escalonamento {\em Round-Robin} com quantum de 4 unidades
+de tempo, desenhe o diagrama de tempo para o escalonamento dos
+processos mostrados na tabela~\ref{tab:ioproc} e calcule a taxa de
+ocupação do disco rígido e da CPU.
+
+
+\def\quantumtotal{11} \def\quantumA{8} \def\quantumB{3}
+\def\quantumfila{2} \question[3,0] Em um sistema operacional o
+escalonador utiliza {\bf \quantumfila{}} filas {\bf A} e {\bf B}. O
+algoritmo entre as filas é de revezamento (Round-Robin). De cada
+\quantumtotal{} unidades de tempo (quantum) do processador,
+\quantumA{} são fornecidas para os processos da fila {\bf A} e
+\quantumB{} para os processos da fila {\bf B}. O tempo de cada fila
+também é dividido entre os processos por revezamento (Round-Robin),
+com quantum de 2 unidades de tempo para todos. A tabela~\ref{so:sched}
+mostra o conteúdo das duas filas no instante zero.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|c|c}\hline
+    \bf Fila & \bf Processo & \bf Tempo de execução \\ \hline\hline
+    A & $P_1$ & 6 \\\hline
+    A & $P_2$ & 7 \\\hline
+    A & $P_3$ & 11 \\\hline
+    B & $P_4$ & 3 \\\hline
+    B & $P_5$ & 8 \\\hline
+    B & $P_6$ & 2 \\\hline
+  \end{tabular}
+  \caption{Duração em unidades de tempo do ciclo das tarefas existentes nas filas A e B.}
+  \label{so:sched}
+\end{table}
+
+
+\noindent Considere que está se iniciando um ciclo de 11 unidades, e
+agora a fila {\bf A} vai receber \quantumA{} unidades de tempo. Faça o digrama
+de tempo (Gantt) dos processos, calculando o tempo médio total de espera em
+cada fila e o tempo médio total considerando todos os processos.
+
+\noindent Obs: Se terminar a fatia de tempo da fila X no meio do 
+quantum de um dos processos, o processador passa para outra
+fila. Entretanto, este processo permanece como primeiro na fila X até
+que todo seu quantum seja consumido.

@@ -1,0 +1,191 @@
+
+\newcounter{qno}\setcounter{qno}{0}
+\def\newex#1{\addtocounter{qno}{1}
+  \paragraph{\arabic{qno}.}}
+%% MARGINPAR
+\setlength{\marginparwidth}{1.2in}
+\let\oldmarginpar\marginpar
+\renewcommand\marginpar[1]{\-\oldmarginpar[\raggedleft\tiny#1]%
+  {\raggedright\tiny#1}}
+
+{\noindent Nome: \hbox{$\underline{\hspace{10cm}}$} Número: \hbox{$\underline{\hspace{3.5cm}}$}\\}
+{\noindent Curso: Sistemas de Informação -- FAFRAM -- $4^o$ Ciclo}
+
+\bigskip\hfil{\bf\noindent Esta lista é para ser entregue até o dia da 1$^a$ prova bimestral.}
+
+\newex{1} Descreva as diferenças entre a arquitetura monolítica e a baseada
+em \emph{microkernel} para os sistemas operacionais
+
+\newex{1} A partir do bloco de controle de processo a seguir:
+
+\def\recbase{4}
+\def\recheight{1}
+\begin{center}
+  \begin{tikzpicture}[scale=0.775,mem/.style={fill=gray!60},
+    var/.style={fill=blue!30}]
+    
+    \draw[var] (0,2+5.5*\recheight) rectangle (\recbase,2+6.5*\recheight)
+    node[midway] {\scriptsize{estado do processo}};
+    \draw[var] (0,2+4.5*\recheight) rectangle (\recbase,2+5.5*\recheight)
+    node[midway] {\scriptsize{número do processo}};
+    \draw[var] (0,2+3.5*\recheight) rectangle (\recbase,2+4.5*\recheight)
+    node[midway] {\scriptsize{contador de programa}};
+    \draw[mem] (0,2+2*\recheight) rectangle (\recbase,2+3.5*\recheight) node[midway] {registradores};
+    \draw[var] (0,2+\recheight) rectangle (\recbase,2+2*\recheight)
+    node[midway] {\scriptsize limites de
+    memória};
+    \draw[var] (0,1.5) rectangle (\recbase,2+\recheight) node[midway] {\scriptsize{lista de
+    arquivos abertos}};
+    \draw[mem] (0,0) rectangle (4,1.5) node[midway] {$\ldots$};
+  \end{tikzpicture}
+\end{center}
+
+Descreva a função dos seguintes atributos:
+\begin{enumerate}
+\item Estado do processo;
+\item Contador do programa;
+\item Registradores;
+\item Número ou identificador do processo.
+\end{enumerate}
+
+
+\newex{1} Qual a sequência para a criação de um processo? Descreva
+cada um dos estados desta sequência e a função do bloco de controle do
+processo (PCB - \emph{Process Control Block}).
+
+\newex{1} Desenhe o diagrama de estados do processo dos sistemas
+operacionais modernos, descrevendo cada estado. Se um processo for
+limitado por E/S (entrada e saída), ou seja utiliza mais recursos de
+entrada e saída do que processamento, e este processo não estiver em
+execução, qual seria o estado mais provável deste processo? E se o
+processo for limitado por processamento, ou seja utiliza mais o
+processador do que requisições de entrada e saída, qual o estado mais
+provável quando este processo não estiver em execução?
+
+\newex{1} Descreva quais elementos são compartilhados pelas {\em
+  threads} em um processo {\em multithread} e o motivo destes
+elementos serem compartilhados?
+
+\newex{1} Calcule o tempo de espera médio para os processos
+mostrados na tabela~\ref{tab:simple}, utilizando os seguintes
+algoritmos:
+
+\begin{enumerate}
+\item Primeiro a chegar, primeiro a ser servido (FIFO -- {\em first in
+  first out});
+\item Processo de menor tempo primeiro (SJF -- {\em shortest job first});
+\item Prioridade.
+\end{enumerate}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{cccc}\hline
+    \bf processo & \bf tempo & \bf prioridade \\\hline
+    $p_1$ & 4 & 3 \\
+    $p_2$ & 2& 2\\
+    $p_3$ & 2& 1\\
+    $p_4$ & 3& 2\\\hline
+  \end{tabular}
+  \caption{Tempo de execução e prioridade dos processos para o exercício~\arabic{qno}.}
+  \label{tab:simple}
+\end{table}
+
+\newex{2} Em um sistema operacional o escalonador utiliza {\bf 2}
+filas {\bf A} e {\bf B}. O algoritmo entre as filas é de revezamento
+(Round-Robin). De cada 11 unidades de tempo (quantum) do processador,
+7 são fornecidas para os processos da fila {\bf A} e 4 para os
+processos da fila {\bf B}. O tempo de cada fila também é dividido
+entre os processos por revezamento (Round-Robin), com quantum de 2
+unidades de tempo para todos. A tabela~\ref{so:sched} mostra o
+conteúdo das duas filas no instante zero.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|c|c}\hline
+    \bf Fila & \bf Processo & \bf Tempo de execução \\ \hline\hline
+    A & $P_1$ & 6 \\\hline
+    A & $P_2$ & 5 \\\hline
+    A & $P_3$ & 7 \\\hline
+    B & $P_4$ & 3 \\\hline
+    B & $P_5$ & 8 \\\hline
+    B & $P_6$ & 4 \\\hline
+  \end{tabular}
+  \caption{Duração em unidades de tempo do ciclo das tarefas existentes nas filas A e B.}
+  \label{so:sched}
+\end{table}
+
+\noindent Considere que está se iniciando um ciclo de 11 unidades, e
+agora a fila {\bf A} vai receber 7 unidades de tempo. Faça o digrama
+de tempo (Gantt) dos processos, calculando o tempo médio total de espera em
+cada fila e o tempo médio total considerando todos os processos.
+
+\noindent Obs: Se terminar a fatia de tempo da fila X no meio do 
+quantum de um dos processos, o processador passa para outra
+fila. Entretanto, este processo permanece como primeiro na fila X até
+que todo seu quantum seja consumido.
+
+\newex{2} Considere dois processos que possuem 4 ciclos, 2 de
+processador (CPU) e 2 de entrada/saída (E/S) a serem executados em um
+sistema, conforme mostrado na tabela~\ref{tab:ioproc}. A E/S está
+relacionada à requisição de leitura ou escrita em um único disco
+rígido.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|cc|cc}\hline
+    & ciclo 1 & & ciclo 2 &  \\\hline
+    \bf processo & \bf CPU & \bf disco & \bf CPU & \bf disco \\\hline
+    $p_1$ & 16 & 10 & 8 & 10  \\
+    $p_2$ & 3 & 30 & 5 & 15 \\\hline
+  \end{tabular}
+  \caption{Tabela contendo os tempos de execução de 2 processos de 2
+    ciclos cada.}
+  \label{tab:ioproc}
+\end{table}
+
+Utilizando o escalonamento {\em Round-Robin} com quantum de 4 unidades
+de tempo, desenhe o diagrama de tempo para o escalonamento dos
+processos mostrados na tabela~\ref{tab:ioproc} e calcule a taxa de
+ocupação do disco rígido e da CPU.
+
+
+
+\question[1,5] Desenhe o diagrama de estados do processo dos sistemas
+operacionais modernos, descrevendo cada estado. Qual a diferença
+básica entre um processo bloqueado esperando por um sinal para voltar
+para a fila de pronto, e um processo suspenso esperando um requisição
+de entrada e saída?
+
+% Se um processo for limitado por E/S (entrada e saída),
+% ou seja utiliza mais recursos de entrada e saída do que processamento,
+% e este processo não estiver em execução, qual seria o estado mais
+% provável deste processo? E se o processo for limitado por
+% processamento, ou seja utiliza mais o processador do que requisições
+% de entrada e saída, qual o estado mais provável quando este processo
+% não estiver em execução?
+
+\question[1,5]  Responda às questões sobre escalonamento:
+
+\begin{enumerate}[a)]
+\item O que é troca ou chaveamento de
+contexto? 
+\item O que é {\it starvation} de um processo? 
+\item Quais os critérios utilizados para definição da prioridade de um processo?
+\end{enumerate}
+
+% \question[1,5] Enumere os principais recursos de um processo com a
+% existência de {\em threads\/}. Classifique os recursos em duas
+% categorias: globais e locais; sendo os globais, compartilhados pelas
+% {\em threads\/} do processo; e locais, dedicados a cada {\em
+%   thread\/}. Explique as razões desta organização.
+
+% \question[2]
+
+%  Defina os seguintes termos:
+
+% \begin{enumerate}[(a)]
+% \item Processo
+% \item Estado do processo
+% \item Bloco de controle de processo
+% \item Escalonadores
+% \end{enumerate}

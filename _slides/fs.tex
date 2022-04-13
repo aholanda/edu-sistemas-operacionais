@@ -1,0 +1,61 @@
+
+\title{Sistema de arquivos}
+\frame{\maketitle}
+
+\begin{frame}{\inserttitle}{Definição}
+  \small
+  Interface entre os processos e os meios de armazenamento que fornece
+  as abstrações e operações para a manipulação de bytes.
+  
+  \bigskip
+  Dentre as principais abstrações encontram-se \alert{arquivo} e
+  \alert{diretório}.\bigskip
+  
+  \pause
+  Dentre as principais operações encontram-se:
+  \begin{columns}
+    \begin{column}{.4\textwidth}
+      \begin{itemize}
+      \item criar arquivo
+      \item remover arquivo
+      \item abrir um arquivo existente
+      \item ler um arquivo aberto
+      \end{itemize}
+    \end{column}
+    \begin{column}{.6\textwidth}
+      \begin{itemize}
+      \item gravar em um arquivo aberto
+      \item fechar um arquivo aberto
+      \item obter metadados de um arquivo
+      \item modificar metadados de um arquivo
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+
+\begin{frame}{\inserttitle}{Hierarquia}
+  
+  O sistema de arquivos normalmente obedece uma \alert{estrutura
+    hierárquica} (árvore n-ária) específica para armazenamento de
+  bytes.
+
+\bigskip
+\begin{center}
+  \begin{tikzpicture}
+    \tikzset{every node/.style={font=\scriptsize},
+      file/.style={minimum height=1cm,blue,draw},
+      directory/.style={semicircle,green!50!black,draw}}
+    \node[red] {\em raiz}
+    [edge from parent fork down]
+    child {node[file] {arquivo}}
+    child {node[directory] {diretório}
+      child {node[file] {arquivo}}
+      child {node[file] {arquivo}}
+    };
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+

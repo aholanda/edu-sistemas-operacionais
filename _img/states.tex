@@ -1,0 +1,32 @@
+\makeatletter
+\colorlet{new}{white}
+\colorlet{ready}{blue}
+\colorlet{exec}{red}
+\colorlet{wait}{orange!70!black}
+\colorlet{end}{black}
+
+  \begin{center}
+    \begin{tikzpicture}[every node/.style={font=\scriptsize},
+      state/.style={ellipse,font=\bf,draw},
+      transition/.style={->,>=latex},
+      statelabel/.style={midway,font=\bf\tiny,text width=1.5cm,align=center}]
+      \def\@@ds{1.75cm}
+      \node[fill=new,draw] (new) at (0,0) {\bf\large novo};
+      \node[above of=new,yshift=-.5cm] {\footnotesize\tt cria PCB};
+      \node[color=white,state,fill=ready] (ready) at (2*\@@ds,-\@@ds) {pronto};
+      \node[color=yellow,state,fill=exec] (exec) at (4*\@@ds,0) {executando};
+      \node[color=gray!30,state,fill=wait] (wait) at (2*\@@ds,\@@ds) {esperando};
+      \node[white,fill=black] (end) at (4.5*\@@ds,\@@ds) {t\'ermino};
+      \node[above of=end,yshift=-.35cm] {\footnotesize\tt apaga PCB};
+    
+      \draw[transition,draw=ready] (new) .. controls +(down:8mm) and +(left:32mm) .. (ready)  node[statelabel,left] {enviado para a fila};
+      \draw[transition,draw=exec] (ready) .. controls +(right:32mm) and +(down:8mm) .. (exec)  node[statelabel,right] {escalonado para execu\c{c}\~ao};
+      \draw[transition,draw=ready] (exec.west) .. controls +(left:8mm) and +(up:8mm) .. (ready.north)  node[statelabel,above] {escalonado para a fila};
+      \draw[transition,draw=wait] (exec.north) .. controls +(up:16mm) and +(right:4mm) .. (wait.east) node[statelabel,above] {requisi\c{c}\~ao E/S};
+      \draw[transition,draw=ready] (wait.west) .. controls +(left:16mm) and +(left:16mm) .. (ready.west) node[statelabel,right] {t\'ermino E/S};
+      \draw[transition,draw=end] (exec) .. controls +(right:32mm) and +(right:24mm) .. (end) node[statelabel,left] {t\'ermino do processo};
+      
+    \end{tikzpicture}
+
+  \end{center}
+  \makeatother

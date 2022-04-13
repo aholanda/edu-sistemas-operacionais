@@ -1,0 +1,96 @@
+
+\chapter{Gerenciamento de memória}
+
+\section{Paginação}
+
+Paginação é a técnica de dividir a memória utilizada pelo SO (Sistema
+Operacional) em blocos, mapeando o endereço físico a um endereço
+lógico ou virtual, permitindo utilização não-contígua dos {\em frames}
+de memória e não carregamento de todos os blocos da memória secundária
+para a memória principal.
+
+A página é a menor unidade de memória que o SO gerencia, embora, o
+processador manipule bytes, o SO lida com blocos que possuem os
+seguintes tamanhos de acordo com a arquitetura, padronizados para
+garantir portablidade:
+
+- 32-bit: 4KB;
+- 64-bit: 8KB.
+
+Se a memória principal possuir tamanho de 8GB em uma arquitetura de
+64-bit, haverá $1.048.576$ páginas distintas.
+
+O processo de carregamento das páginas é intermediado pela {\bf
+Unidade de Gerenciamento de Memória} ({\em MMU -- Memory Management
+Unit}) que consulta uma {\bf tabela de páginas} para verificar 
+a localização física do endereço lógico (virtual) requisitado.
+
+\begin{figure}
+\input{\imgdir/paging}
+\label{fig:paging}
+\caption{Paginação.}
+\end{figure}
+
+A Figura~\ref{fig:paging} mostra as informações armazenadas
+na tabela de páginas necessárias para localização e manutenção
+da integridade dos dados armazenados nas memórias primária
+(DRAM--{\em Dynamic Random Access Memory}) e secundária 
+(disco magnético).
+
+Quando a página contida no endereço lógico {\tt 01} for requisitada
+junto à MMU, o conteúdo do endereço físico da memória principal
+$(2,6)$ é retornado ao requisitante.
+
+O campo do {\bf bit de validade} armazena a informação sobre as
+páginas carregadas na memória principal. A página {\tt 10}, por
+exemplo, não se encontra na memória principal, portanto, se esta for
+requisitada, terá que ser carregado da memória secundária para a
+principal e o valor do bit atribuído para $1$.
+
+O {\bf bit de sujeira (dirty)} indica se a página foi modificada na
+memória principal, e esta modificação ainda não foi escrita na memória
+secundária. Por exemplo, se a página armazenasse somente valores
+inteiros, a página {\tt 11} foi carregado da memória secundária para a
+principal com o valor $-1$, após alguns instantes, seu valor é
+modificado para $8$.  O bit de sujeira é modificado para o valor $1$
+indicando que o estado desta página na memória principal é diferente
+da existente na secundária. Há a necessidade de atualizar o estado da
+página {\tt 11} na memória secundária.
+
+O bit de sujeira assume um papel importante, também se a página não
+for modificada, pois, indica que a página não precisa ser atualizada
+na memória secundária, economizando uma operação de escrita de E/S
+(Entrada/Saída).
+
+{\color{blue}\bf Exercício.} Dois processos possuem as seguintes páginas lógicas:
+
+\begin{center}
+$P_1= \{a,b,c,d\}$
+$P_2= \{1,2,3\}$
+\end{center}
+
+Supondo que o sistema operacional dispõe de 4 páginas físicas
+para alocar as páginas lógicas, faça um esboço gráfico
+para a ocupação das páginas lógicas que forem requisitadas
+na seguinte sequência de operações do processador:
+
+\begin{center}
+{\tt\{R(2),W(3),R(1),R(a),R(b),W(3),W(1),W(1),R(c),R(d),W(1),R(a)\}}
+\end{center}
+utilizando os seguintes algoritmos de substituição de p\'aginas:\\
+\begin{enumerate}
+\item FIFO;
+\item Segunda chance;
+\item Relógio;
+\item LRU.
+\end{enumerate}
+
+\noindent onde\\
+\noindent {\tt R(p)} -- significa {\bf leitura} ({\em read}) da página {\tt p} e\\
+\noindent {\tt W(p)} -- significa {\bf escrita} ({\em write}) na página {\tt p}.\\
+\bigskip
+Calcule a taxa de aus\^encia de p\'aginas (porcentagem de {\em page
+miss/fault}) e a quantidade de operações de escrita na memória
+secundária para ambos os algoritmos.
+
+

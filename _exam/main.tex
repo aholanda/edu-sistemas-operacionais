@@ -1,0 +1,36 @@
+\documentclass[10pt,a4paper]{exam}
+
+\usepackage{tikz}
+\usepackage{listings}
+\lstset{language=C,inputencoding=utf8,basicstyle=\footnotesize, 
+    flexiblecolumns=true, numbers=left, numberstyle=\tiny\color{gray}, 
+    commentstyle=\scriptsize\color{black!50},mathescape}
+  \usepackage{enumerate}
+  \usepackage{lcg} % random numbers
+\newcounter{exno}
+\def\exercise{\addtocounter{exno}{1}\medskip\noindent{\bf Exercício \arabic{exno}.}}
+\def\<#1>{\langle#1\rangle}
+\def\ra{$\leftarrow$}
+\def\question#1{\exercise}
+
+\renewcommand{\lstlistingname}{Listagem}
+
+\title{Sistemas Operacionais}
+\author{}
+\begin{document}
+
+\lstset{language=C,
+  basicstyle=\small,
+  commentstyle={\color{gray}\tiny}
+}
+\date{\today}
+
+ \input{proc}
+ \input{sync}
+ \input{deadlock}
+ \input{mm}
+\input{io}
+
+ \input{fs}
+
+\end{document}

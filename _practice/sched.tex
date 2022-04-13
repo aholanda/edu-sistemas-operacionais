@@ -1,0 +1,42 @@
+
+\section*{Escalonamento}
+
+\paragraph{nice} Fazer um {\em loop} infinito conforme o código a
+seguir:
+
+\begin{lstlisting}[name=a,language=c]
+main(){
+  for(;;){}
+}  
+\end{lstlisting}
+
+Compilar o programa e executar 3 instâncias com prioridades diferentes
+ajustadas pelo comando {\tt nice}:
+
+\begin{lstlisting}[language=bash,]
+  # gcc -o loop_1 loop.c
+  # nice -n 1 ./loop_1
+  # gcc -o loop_10 loop.c
+  # nice -n 10 ./loop_10
+  # gcc -o loop_20 loop.c
+  # nice -n 20 ./loop_20
+\end{lstlisting}
+
+Mate todos os processos com o comando {\tt killall} e depois tente
+ajustar as prioridades para valores negativos:
+
+\begin{lstlisting}
+  # killall loop_{1,10,20}
+  # nice -n -1 ./loop
+\end{lstlisting}
+
+O processo não terá a prioridade $-1$ atribuída, mas iniciará com a
+prioridade padrão. A prioridade pode ser modificada com o comando {\tt
+renice}:
+
+\begin{lstlisting}
+  # renice [-n] prioridade pid [...pid] 
+\end{lstlisting}
+
+\noindent ou pressionando a tecla {\tt h} dentro do ambiente {\tt top}.
+

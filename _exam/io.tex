@@ -1,0 +1,54 @@
+
+\section*{Gerenciamento de Entrada e Saída (E/S)}
+
+
+\exercise~Há a necessidade de escalonamento das requisições provenientes
+    dos dispositivos de caracter? Por quê?
+
+\exercise~O que é e onde se localiza o {\em buffer} de dados dos
+    dispositivos de E/S?
+
+\exercise~Por quê os sistemas operacionais exigem de todos os {\em
+      drivers} de dispositivo a mesma interface (protótipo de função)
+    padrão?
+
+    \exercise~Descreva se a interrupção ou acesso direto à memória
+    (DMA) é mais adequado para os seguintes dispositivos:
+\begin{enumerate}[a)]
+\item teclado;
+\item disco rígido;
+\item placa de rede.
+\end{enumerate}
+
+\noindent Descreva as etapas do processo de transferência de dados
+destes dispositivos com o processador, sistema operacional e
+manipulador de interrupção.
+
+\exercise~Quais são os $3$ componentes principais no tempo de acesso ao
+    disco?
+
+\exercise~Dada as seguintes sequências de requisições para um disco
+    com $200$ trilhas:
+    \begin{center}
+      $55\ 58\ 39\ 88\ 18\ 90\ 160\ 150\ 38\ 122\ 184$
+    \end{center}
+    onde a posição atual dos cabeçotes é $100$, calcule a quantidade
+    de movimentos dos cabeçotes para atender às requisições utilizando
+    os seguintes algoritmos de escalonamento de E/S:
+    
+    \begin{enumerate}[a)]
+    \item FCFS;
+    \item SSTF;
+    \item SCAN;
+    \item C-SCAN.
+    \end{enumerate}
+ 
+\section*{Principais t\'opicos a serem estudados para a prova}
+
+\begin{enumerate}
+\item Dispositivos de caracter, bloco e rede;
+\item Interfaces de E/S com o sistema operacional;
+\item {\em Buffer};
+\item Escalonamento em dispositivos de E/S.
+\end{enumerate}
+

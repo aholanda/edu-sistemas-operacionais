@@ -1,0 +1,38 @@
+\documentclass{book}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,anchorcolor=blue,urlcolor=blue}
+\usepackage{fontspec}
+\usepackage[brazil]{babel}
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows,automata,calc,chains,circuits,graphs,positioning,shapes.gates.logic.US,shapes,trees}
+\usepackage{circuitikz}
+\usepackage[]{polyglossia}
+\setdefaultlanguage{brazil}
+ \usepackage{ifthen} % \ifthenelse
+ \usepackage{xcolor}
+ \usepackage{listings}
+  \lstset{language=C,inputencoding=utf8,basicstyle=\footnotesize, 
+    flexiblecolumns=true, numbers=left, numberstyle=\tiny\color{gray}, 
+    commentstyle=\scriptsize\color{black!50},mathescape}
+
+\def\imgdir{../_img}
+
+\def\thread{{\it thread\/}}
+
+\title{\rm Sistemas Operacionais}
+\author{Adriano J. Holanda}
+\date{2012}
+
+\begin{document}
+\maketitle
+
+\input 01-proc
+
+\input 02-ipc
+
+\input 03-mem
+
+\input 04-io-storage
+
+\end{document}

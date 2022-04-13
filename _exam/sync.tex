@@ -1,0 +1,421 @@
+%%% Local Variables:
+%%% mode: xelatex
+%%% TeX-master: "main"
+%%% End:
+
+\section*{Concorrência e Sincronização}
+
+\exercise~As threads 0 ($T_0$) e 1 ($T_1$) acessam a variável global
+$i$ com concorrência, incrementando seu valor com a expressão {\tt
+  i++} da linguagem C. Supondo que o valor inicial de $i$ seja $8$, o
+valor final de $i$ após a execução das 2 threads deve ser $10$. Se a
+conversão da expressão para uma liguagem de montagem hipotética gerar
+o seguinte código:
+
+\begin{verbatim}
+        LOAD      R1,#i      # 0. Lê o contéudo de i e escreve no registrador R1.
+        ADD       R1,R1,1    # 1. Incrementa o valor contido em R1.
+        STORE     R1,#i      # 2. Escreve o conteúdo de R1 em i.
+\end{verbatim}
+
+\noindent e tomarmos a convenção de que a tupla $\<T_0,1>$ indica
+a execução da linha 1 da thread 0, calcule o valor final de $i$ após a
+execução das seguintes sequências de instruções:
+
+\begin{enumerate}[a)]
+\item $\<T_0,0> \rightarrow \<T_0,1> \rightarrow \<T_0,2>
+\rightarrow\<T_1,0>\rightarrow\<T_1,1> \rightarrow\<T_1,2>$
+\item $\<T_0,0> \rightarrow\<T_1,0> \rightarrow\<T_0,1>
+\rightarrow\<T_1,1>\rightarrow\<T_0,2> \rightarrow\<T_1,2>$
+\item $\<T_0,0>\rightarrow\<T_0,1> \rightarrow\<T_1,0>
+\rightarrow\<T_1,1>\rightarrow\<T_0,2> \rightarrow\<T_1,2>$
+\item $\<T_1,0>\rightarrow\<T_1,1> \rightarrow\<T_0,0>
+\rightarrow\<T_0,1>\rightarrow\<T_0,2> \rightarrow\<T_1,2>$
+\item $\<T_1,0>\rightarrow\<T_1,1>\rightarrow\<T_1,2>
+\rightarrow\<T_0,0>\rightarrow\<T_0,1>\rightarrow\<T_0,2>$
+\end{enumerate}
+
+\noindent Quais das sequências enumeradas garante que o valor final de $i$ seja
+íntegro? O que pode ser feito para garantir que o valor final de $i$
+seja igual ao valor esperado?
+
+\exercise~As primitivas de exclusão mútua podem ser implementadas com
+espera ociosa ou com bloqueio. Discuta a aplicabilidade e os méritos
+relativos de cada abordagem.
+
+\exercise~Explique como a habilitação e a desabilitação de
+interrupções são úteis na implementação de primitivas de exclusão
+mútua em sistemas com um único processador.
+
+\exercise~Verifique se a implementação de {\em spin lock} usando a
+função {\tt sincroniza0()} a seguir é confiável para a sincronização
+das {\em threads} 0 e 1. Explique detalhadamente a verificação.\bigskip
+
+\begin{minipage}{.48\textwidth}
+\begin{lstlisting}
+  /* Thread 0 */
+  int haBloqueio;
+  void sincroniza0() {
+    while (haBloqueio == 1) {/* spin */};
+    haBloqueio = 1;
+    /* região crítica */
+    haBloqueio = 0;
+  }
+\end{lstlisting}
+\end{minipage}
+\begin{minipage}{.48\textwidth}
+\begin{lstlisting}
+  /* Thread 1 */
+  int haBloqueio;
+  void sincroniza0() {
+    while (haBloqueio == 1) {/* spin */};
+    haBloqueio = 1;
+    /* região crítica */
+    haBloqueio = 0;
+  }
+\end{lstlisting}
+\end{minipage}
+
+\exercise~Verifique se a implementação de {\em spin lock} usando a
+função {\tt sincroniza1(int tid)} a seguir é confiável para a
+sincronização das {\em threads} 0 e 1. Explique detalhadamente a
+verificação.\bigskip
+
+\begin{minipage}{.48\textwidth}
+\begin{lstlisting}
+  /* Thread 0 */
+  int vez;
+  void sincroniza1(int tid) {/* passado valor 0 */
+    /* tid é a identificação da thread */
+    while (vez == 1-tid) {/* spin */};
+    vez = tid;
+    /* região crítica */
+    vez = 1  - tid;
+  }
+\end{lstlisting}
+\end{minipage}
+\begin{minipage}{.48\textwidth}
+\begin{lstlisting}
+  /* Thread 1 */
+  int vez;
+  void sincroniza1(int tid) {/* passado valor 1 */
+    /* tid é a identificação da thread */
+    while (pid == 1 - tid) {/* spin */};
+    vez = tid;
+    /* região crítica */
+    vez = 1 - tid;
+  }
+\end{lstlisting}
+\end{minipage}
+
+\exercise~Mostre que o algoritmo de Peterson limita o tempo de cada
+thread com justiça, ou seja, uma thread não pode ser atrasada
+indefinidamente em qualquer condição de espera. Em particular, mostre
+que qualquer thread que esteja a espera para entrar em sua região
+crítica será atrasada por não mais do que o tempo que a outra thread
+leva para entrar e sair de sua região crítica uma vez.
+
+% \exercise~Apresente uma análise detalhada do Algoritmo de Peterson
+% para demonstrar que funciona adequadamente. Em particular, mostre se
+% há ocorrência de impasse (deadlock) ou espera indefinida, e que a
+% exclusão mútua é imposta com sucesso.
+
+\exercise~Leia os artigos da Wikipédia buscando a palavra ``Dijkstra''
+e pelo verbete ``Semáforo (computação)''. Verifique quais são as
+referências de cada artigo e ligações externas (se houver).
+
+
+\ifnum1=2
+
+\section{Sincronização}
+\subsection{Exercícios}
+
+Em uma aplicação concorrente que controla saldo bancário em contas
+correntes, dois processoscompartilham uma região de memória onde estão
+armazenados os saldos dos clientes A e B. Osprocessos executam,
+concorrentemente os seguintes passos: 
+
+\begin{figure}[h]
+\begin{tt}
+\begin{tabular}{l|l}
+Processo 1 (Cliente A) & Processo 2 (Cliente B) \\
+\/\* saque em A */ & /* saque em A */ \\
+1a. x \ra{} saldo\_do\_cliente\_A; & 2a. y \ra{} saldo\_do\_cliente\_A; \\
+1b. x \ra{} x - 200; & 2b. y \ra{} y - 100;\\
+1c. saldo\_do\_cliente\_A \ra{} x; & 2c. saldo\_do\_cliente\_A \ra{} y;\\
+/* deposito em B */ & /* deposito em B */\\
+1d. x \ra{} saldo\_do\_cliente\_B; & 2d. y \ra{} saldo\_do\_cliente\_B;\\
+1e. x \ra{} x + 100; & 2e. y \ra{} y + 200;\\
+1f. saldo\_do\_cliente\_B \ra{} x; & 2f. saldo\_do\_cliente\_B \ra{} y; \\
+\end{tabular}
+\end{tt}
+\caption{Acesso concorrente à atualização de conta bancária.}
+\end{figure}
+
+Supondo que os valores dos saldos de A e B sejam, respectivamente, 500
+e 900, antes de os processosexecutarem, pede-se:
+
+\begin{itemize}
+\item Quais os valores corretos esperados para os saldos dos clientes
+  A e B após o término da execuçãodos processos?\\
+
+R: Cliente A = 200 e Cliente B = 1.200
+
+\item Quais os valores finais dos saldos dos clientes se a sequência
+  temporal de execução das operaçõesfor: 1a, 2a, 1b, 2b, 1c, 2c, 1d,
+  2d, 1e, 2e, 1f, 2f?\\
+
+R: Cliente A = 400 e Cliente B = 1.100
+
+\item Utilizando semáforos, proponha uma solução que garanta a
+  integridade dos saldos e permita o maiorcompartilhamento possível
+  dos recursos entre os processos, não esquecendo a especificação
+  dainicialização dos semáforos.
+\end{itemize}
+
+\begin{figure}
+\centering
+\begin{tt}
+\begin{tabular}{l|l}
+Processo 1 (Cliente A) & Processo 2 (Cliente B)\\
+/* saque em A */ & /* saque em A */\\
+Down (S1) & Down (S1)\\
+x \ra{} saldo\_do\_cliente\_A; & y \ra{} saldo\_do\_cliente\_A;\\
+x \ra{} x - 200; & y \ra{} y - 100; \\ 
+saldo\_do\_cliente\_A \ra{} x; &  saldo\_do\_cliente\_A \ra{} y;\\
+Up (S1) & Up (S1)\\
+/* deposito em B */ & /* deposito em B */\\
+Down (S2) & Down (S2)\\
+x \ra{} saldo\_do\_cliente\_B; & y \ra{} saldo\_do\_cliente\_B;\\
+x \ra{} x + 100; & y \ra{} y + 200;\\
+saldo\_do\_cliente\_B \ra{} x; & saldo\_do\_cliente\_B \ra{} y;\\
+Up (S2) & Up (S2) \\ 
+\end{tabular}
+\end{tt}
+
+\caption{Acesso concorrente utilizando semáforo para evitar inconsistências.}
+\end{figure}
+
+
+O problema dos leitores/escritores, apresentado a seguir, consiste em
+sincronizar processos queconsultam/atualizam dados em uma base
+comum. Pode haver mais de um leitor lendo ao mesmo tempo;no entanto,
+enquanto um escritor está atualizando a base, nenhum outro processo
+pode ter acesso a ela(nem mesmo leitores).
+
+\begin{tt} 
+\begin{tabbing}
+  VAR \=Acesso: Semaforo := 1;\\
+  \>Exclusao: Semaforo := 1;\\
+  \>Nleitores: integer := 0;\\
+
+PROCEDURE Escritor;\\
+BEGIN\\
+\> ProduzDado;\\
+\> DOWN (Acesso);\\
+\> Escreve;\\
+\> UP (Acesso);\\
+END;\\
+
+PROCEDURE Leitor;\\
+BEGIN\\
+\> DOWN (Exclusao);\\
+\> Nleitores := Nleitores + 1;\\
+\> IF ( Nleitores = 1 ) THEN DOWN (Acesso);\\
+\> UP (Exclusao);\\
+\> Leitura;\\
+\> DOWN (Exclusao);\\
+\> Nleitores := Nleitores - 1;\\
+\> IF ( Nleitores = 0 ) THEN UP (Acesso);\\
+\> UP (Exclusao);\\
+\> ProcessaDado;
+END;\\
+ 
+\end{tabbing}
+\end{tt}
+ 
+\begin{itemize}
+ 
+\item Suponha que exista apenas um leitor fazendo acesso à
+  base. Enquanto este processo realiza aleitura, quais os valores das
+  três variáveis?  
+
+  R: Acesso=0 Exclusao=1 Nleitores=1
+ 
+\item Chega um escritor enquanto o leitor ainda está lendo. Quais os
+  valores das três variáveis após obloqueio do escritor ? Sobre
+  qual(is) semáforo(s) se dá o bloqueio?  
+
+R: Acesso=0 Exclusao=1 Nleitores=1, o bloqueio ocorre no semáforo
+Acesso.
+ 
+\item Chega mais um leitor enquanto o primeiro ainda não acabou de ler
+  e o escritor está bloqueado.Descreva os valores das três variáveis
+  quando o segundo leitor inicia a leitura.  
+
+R: Acesso=0 Exclusao=1 Nleitores=2
+ 
+\item Os dois leitores terminam simultaneamente a leitura. É possível
+  haver problemas quanto àintegridade do valor da variável nleitores?
+  Justifique.  
+
+R: Não, pois a exclusão mútua a esta variável é implementada pelo
+semáforo Exclusao.
+ 
+\item Descreva o que acontece com o escritor quando os dois leitores
+  terminam suas leituras. Descrevaos valores das três variáveis quando
+  o escritor inicia a escrita.  
+  
+  R: O processo Escritor inicia a escrita. Acesso=0 Exclusao=1
+  Nleitores=0
+ 
+\item Enquanto o escritor está atualizando a base, chagam mais um
+  escritor e mais um leitor. Sobrequal(is) semáforo(s) eles ficam
+  bloqueados? Descreva os valores das três variáveis após obloqueio
+  dos recém-chegados.  
+
+R: Os processo ficam bloqueados no semáforo Acesso. Acesso=0
+Exclusao=0 Nleitores=1
+ 
+\item Quando o escritor houver terminado a atualização, é possível
+  prever qual dos processosbloqueados (leitor ou escritor) terá acesso
+  primeiro à base?  
+
+R: Não, em geral os sistemas operacionais utilizam a escolha randômica
+dentre os processos em estado deespera.
+ 
+\item Descreva uma situação onde os escritores sofram starvation
+  (adiamento indefinido).  
+
+  R: Caso um processo Escritor esteja aguardando, bloqueado pelo
+  semáforo Acesso, e sempre surgirem novosprocessos Leitor, o processo
+  Escritor pode nunca ganhar acesso ao recurso.
+\end{itemize}
+
+\end{document}
+\fi
+
+
+  \question[3] Dois processos acessam a variável global {\tt
+    numero\_de\_acessos}, que indica o número de acessos em uma página
+  web, de acordo com as instruções a seguir:
+  
+  \begin{tt}
+  \begin{center}
+    \begin{tabular}{|l|}\hline
+      \bf Processo 0\\\hline
+      0a. x $\leftarrow$ numero\_de\_acessos\\
+      0b. x $\leftarrow$ x + 10\\
+      0c. numero\_de\_acessos $\leftarrow$ x\\\hline
+    \end{tabular}
+  \end{center}
+\end{tt}
+
+\begin{tt}
+  \begin{center}
+    \begin{tabular}{|l|}\hline
+      \bf Processo 1\\\hline
+      1a. y $\leftarrow$ numero\_de\_acessos\\
+      1b. y $\leftarrow$ y + 18\\
+      1c. numero\_de\_acessos $\leftarrow$ y\\\hline
+    \end{tabular}
+  \end{center}
+\end{tt}
+
+\reinitrand[counter=rand,first=128,last=2048] 
+
+Supondo que o valor inicial da variável {\tt numero\_de\_acessos} é
+\rand{\arabic{rand}}, responda as seguintes questões:
+
+\begin{parts}
+
+\part 
+Qual o valor esperado para a variável {\tt numero\_de\_acessos},
+se a execução for sequencial, com o {\tt Processo 0} executando
+primeiro?
+
+\part
+\label{unsync} Se o acesso não for sequencial, mas concorrente,
+qual o valor final da variável {\tt numero\_de\_acessos} se a
+sequência temporal de execução for {\tt 0a, 1a, 0b, 1b, 0c, 1c}?
+
+\part Se houver inconsistência no valor esperado para {\tt
+  numero\_de\_acessos} após a execução da sequência descrita no item
+\ref{unsync}, como ela poderia ser consertada utilizando os
+mecanismos de sincronização? Demonstre como seria o código
+corrigido.
+
+\end{parts}
+
+  \question[1] Qual a diferença básica entre os mecanismos de
+  sincronização {\bf \em spin lock} e {\em \bf mutex}? Para as
+  características ou requisitos dos processos listados na tabela,
+  escolha qual mecanismo é mais adequado para sincronização.
+  \bigskip
+  \def\whichlock{( ) {\em spin lock}\hbox{     } ( ) {\em mutex}}
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}\hline
+      \bf Característica/Requisito & \bf Bloqueio recomendado\\\hline\hline
+      Baixa sobrecarga de bloqueio & \whichlock\\\hline
+      Tempo curto de bloqueio & \whichlock\\\hline
+      Tempo longo de bloqueio & \whichlock\\\hline
+      Necessidade de espera durante a posse do bloqueio & \whichlock\\\hline
+    \end{tabular}
+    \caption{Bloqueio recomendado de acordo com as características do
+      bloqueio do processo.}
+    \label{so:sync}
+  \end{table}
+
+
+\question[3] O algoritmo de Peterson pode ser usado para implementar
+o mecanismo de bloqueio do tipo {\em spin} ({\em spin lock}), que evita
+que duas {\em threads} ou processos interessados no mesmo recurso entrem
+na região crítica ao mesmo tempo. O algoritmo em {\sc C} é listado a seguir:
+
+\lstset{numbers=left,numberstyle=\scriptsize,
+        commentstyle=\footnotesize\color{gray},
+        frame=single}
+\begin{lstlisting}
+int vez; 
+int interessado[2]; 
+
+void Peterson(int tid) { 
+     int outro; 
+     outro = 1 - tid; 
+
+     interessado[tid] = 1; 
+     vez = tid; 
+
+     while(vez == tid && interessado[outro] == 1)
+                /* laço infinito */;
+
+     /* REGIÃO CRÍTICA */
+
+     interessado[tid] = 0;
+}
+\end{lstlisting}
+
+\noindent O argumento {\tt int tid} recebe o valor 0 ou 1, indicando em qual das
+2 {\em threads} o algoritmo está sendo executado.
+
+Vamos adotar a seguinte convenção: $T_{n,m}$ indica que a {\em thread}
+$n$ está executando a linha $m$ do código. Por exemplo, $T_{0,9}$
+indica que a {\em thread} $0$ executa a linha $9$, ou seja, {\tt vez =
+0}.
+
+Realize as sequências a seguir, e indique qual {\em thread} entrará na
+região crítica e qual {\em thread} ficará esperando no laço infinito.
+
+\begin{enumerate}[a)]
+
+\item $T_{0,5}$, $T_{0,6}$, $T_{0,8}$, $T_{0,9}$, $T_{1,5}$, $T_{1,6}$,
+$T_{1,9}$, $T_{0,11}$, $T_{1,11}$;
+
+\item $T_{1,5}$, $T_{1,6}$, $T_{1,8}$, $T_{1,9}$, $T_{0,5}$, $T_{0,6}$,
+$T_{0,9}$, $T_{0,11}$, $T_{1,11}$;
+
+\end{enumerate}
+
+O que acontece se as duas {\em threads} executarem a linhas $11$ ao
+mesmo tempo?

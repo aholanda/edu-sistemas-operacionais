@@ -1,0 +1,69 @@
+\date{10/5/2016}
+\maketitle
+
+\section*{Gerenciamento de Entrada e Saída (E/S)}
+
+\paragraph{Interrupções.} Verifique os números de requisições de  interrupções
+pelo comando:
+
+\CMD{cat /proc/interrupts}
+
+\paragraph{escalonamento de E/S}~Verifique qual a política de
+escalonamento de E/S usando o comando:
+
+\CMD{cat /sys/block/sda/queue/scheduler}
+
+\paragraph{sync.} Use o comando {\tt sync} para forçar
+a atualização dos blocos modificados na memória secundária. Veja seu
+manual pelo comando 
+
+\CMD{man sync}
+
+\paragraph{iostat.} Mostra a estatística de E/S. 
+
+\begin{itemize}
+\item Para ler informações estendidas a cada 5 segundos
+
+  \CMD{iostat -x 5}
+
+\item Para ler informações apenas sobre o disco a cada 5 segundos
+
+  \CMD{iostat -dx 5}
+
+\item Informações em MB
+
+  \CMD{iostat -m}
+
+\end{itemize}
+
+\paragraph{hdparm.} Lê ou ajusta parâmetros de dispositivos SATA/IDE.
+
+\begin{itemize}
+\item Para ler as informações do disco
+
+  \CMD{sudo hdparm -I /dev/sda | less} 
+
+  \noindent a opção {\tt -I} deve ser usada, {\tt less} é usado para
+  paginação da saída.
+
+\item Para testar a velocidade, deve ser usada a opção {\tt -t}:
+
+  \CMD{sudo hdparm -t /dev/sda} 
+
+\item O comando a seguir verifica se o disco está usando um {\em buffer} 
+  para transferência dos dados
+
+  \CMD{sudo hdparm -W /dev/sda}
+
+  \noindent  aumentando a velocidade de transmissão  se estiver utilizando.
+
+\item Os discos modernos conseguem ler alguns setores a mais, que serão os mais 
+  prováveis a serem requisitados. A opção {\tt -a} controla a quantidade 
+  de setores a mais a serem lidos. Pelo comando
+
+  \CMD{hdparm -a256 /dev/sda}
+
+  serão lidos 256 setores a mais.
+
+\end{itemize}
+

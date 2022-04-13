@@ -1,0 +1,322 @@
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: main
+%%% End:
+
+\lecture{Sincronização e concorrência}{sync:titlepage}
+
+\frame{\title{\insertlecture}\titlepage}
+
+%\frame{\frametitle{Trilha}\tableofcontents}
+
+\lecture{Regiões críticas e condições de disputa}{sync:intro}
+
+\section{\insertlecture}
+\begin{frame}{\insertlecture}
+
+  \begin{itemize}
+    % lkd pg 162
+  \item \alert{Regiões críticas} ({\em critical regions}): thechos de
+    código que acessam e manipulam dados compartilhados.
+  \item \alert{Condição de disputa} ({\em race condition}): quando
+    duas ou mais {\em threads} estão executando simultaneamente a
+    mesma região crítica, \underline{disputando} o acesso aos recursos
+    compartilhados.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Exemplo}{Condição de disputa}
+
+  \def\dist{15mm}
+  \begin{tikzpicture}[memory/.style={rectangle,draw,very thick,anchor=east,font=\footnotesize},
+    op/.style={rectangle,very thick,font=\scriptsize}]
+    \node (mem) [memory] {7};
+    \node (i) [above of=mem, yshift=-5mm,color=red!30!black!70!]
+    {\large i};
+    \node (t1) [right of=mem,xshift=2*\dist] {{\em Thread} $1$};
+    \node (t1op1) [below of=t1,op] {lê i (7)};
+    \node (t1op2) [below of=t1op1,op] {incrementa i
+      (7$\rightarrow$8)};
+    \node (t1op3) [below of=t1op2,op] {escreve i
+      (8)};
+    \node (t1op4) [below of=t1op3,op] {--};
+    \node (t1op5) [below of=t1op4,op] {--};
+    \node (t1op6) [below of=t1op5,op] {--};
+
+
+    \node (t2) [right of=t1, xshift=\dist] {{\em Thread} $2$};
+    \node (t2op1) [below of=t2,op] {--};
+    \node (t2op2) [below of=t2op1,op] {--};
+    \node (t2op3) [below of=t2op2,op] {--};
+    \node (t2op4) [below of=t2op3,op] {lê i (8)};
+    \node (t2op5) [below of=t2op4,op] {incrementa i
+      (8$\rightarrow$9)};
+    \node (t2op6) [below of=t2op5,op] {escreve i
+      (9)};
+
+    \path (t1) edge[->] (t1op1);
+    \path (t1op1) edge[->] (t1op2);
+    \path (t1op2) edge[->] (t1op3);
+    \path (t1op3) edge[->] (t1op4);
+    \path (t1op4) edge[->] (t1op5);
+    \path (t1op5) edge[->] (t1op6);
+
+    \path (t2) edge[->] (t2op1);
+    \path (t2op1) edge[->] (t2op2);
+    \path (t2op2) edge[->] (t2op3);
+    \path (t2op3) edge[->] (t2op4);
+    \path (t2op4) edge[->] (t2op5);
+    \path (t2op5) edge[->] (t2op6);
+  \end{tikzpicture}
+
+\end{frame}
+
+\begin{frame}{Exemplo}{Condição de disputa}
+  {\color{red} \small Variável global {\tt i} ao final da disputa fica em estado inconsistente.}
+  \def\dist{15mm}
+  \begin{tikzpicture}[memory/.style={rectangle,draw,very thick,anchor=east,font=\footnotesize},
+    op/.style={rectangle,very thick,font=\scriptsize}]
+    \node (mem) [memory] {7};
+    \node (i) [above of=mem, yshift=-5mm,color=red!30!black!70!]
+    {\large i};
+    \node (t1) [right of=mem,xshift=2*\dist] {{\em Thread} $1$};
+    \node (t1op1) [below of=t1,op] {lê i (7)};
+    \node (t1op2) [below of=t1op1,op] {incrementa i
+      (7$\rightarrow$8)};
+    \node (t1op3) [below of=t1op2,op] {--};
+    \node (t1op4) [below of=t1op3,op] {escreve i
+      (8)};
+    \node (t1op5) [below of=t1op4,op] {--};
+    \node (t1op6) [below of=t1op5,op] {--};
+
+
+    \node (t2) [right of=t1, xshift=\dist] {{\em Thread} $2$};
+    \node (t2op1) [below of=t2,op] {lê i (7)};
+    \node (t2op2) [below of=t2op1,op] {--};
+    \node (t2op3) [below of=t2op2,op] {incrementa i
+      (7$\rightarrow$8)};
+    \node (t2op4) [below of=t2op3,op] {--};
+    \node (t2op5) [below of=t2op4,op] {--};
+    \node (t2op6) [below of=t2op5,op] {escreve i
+      (8)};
+
+    \path (t1) edge[->] (t1op1);
+    \path (t1op1) edge[->] (t1op2);
+    \path (t1op2) edge[->] (t1op3);
+    \path (t1op3) edge[->] (t1op4);
+    \path (t1op4) edge[->] (t1op5);
+    \path (t1op5) edge[->] (t1op6);
+
+    \path (t2) edge[->] (t2op1);
+    \path (t2op1) edge[->] (t2op2);
+    \path (t2op2) edge[->] (t2op3);
+    \path (t2op3) edge[->] (t2op4);
+    \path (t2op4) edge[->] (t2op5);
+    \path (t2op5) edge[->] (t2op6);
+  \end{tikzpicture}
+
+\end{frame}
+
+\def\thetitle{Bloqueio}
+\section{\thetitle}
+\begin{frame}{\thetitle}{Operações atômicas}
+
+  \def\dist{15mm}
+    \begin{tikzpicture}[memory/.style={rectangle,draw,very thick,anchor=east,font=\footnotesize},
+    op/.style={rectangle,very thick,font=\scriptsize}]
+    \node (mem) [memory] {7};
+    \node (i) [above of=mem, yshift=-5mm,color=red!30!black!70!]
+    {\large i};
+    \node (t1) [right of=mem,xshift=\dist] {{\em Thread} $1$};
+    \node (t1op1) [below of=t1,op,yshift=1mm] {{\tt bloqueia(i)}};
+    \node (t1op2) [below of=t1op1,op] {sucesso: realiza bloqueio em
+      {\tt i}!!};
+    \node (t1op3) [below of=t1op2,op] {{\tt le(i) $\wedge$ incrementa(i)
+      $\wedge$ escreve(i)}};
+    \node (t1op4) [below of=t1op3,op] {{\tt libera(i)}};
+    \node (t1op5) [below of=t1op4,op] {--};
+    \node (t1op6) [below of=t1op5,op] {--};
+    \node (t1op7) [below of=t1op6,op] {--};
+    \node (t1op8) [below of=t1op7,op] {--};
+
+
+    \node (t2) [right of=t1, xshift=3*\dist] {{\em Thread} $2$};
+    \node (t2op1) [below of=t2,op] {{\tt bloqueia(i)}};
+    \node (t2op2) [below of=t2op1,op] {{\color{red} falha! esperando...}};
+    \node (t2op3) [below of=t2op2,op] {{\color{red} esperando...}};;
+    \node (t2op4) [below of=t2op3,op] {{\color{red} esperando...}};
+    \node (t2op5) [below of=t2op4,op] {sucesso: realiza bloqueio em
+      {\tt i}!!};
+    \node (t2op6) [below of=t2op5,op] {{\tt le(i) $\wedge$ incrementa(i)
+      $\wedge$ escreve(i)}};
+    \node (t2op7) [below of=t2op6,op] {libera {\tt i}};
+
+    \path (t1) edge[->] (t1op1);
+    \path (t1op1) edge[->] (t1op2);
+    \path (t1op2) edge[->] (t1op3);
+    \path (t1op3) edge[->] (t1op4);
+    \path (t1op4) edge[->] (t1op5);
+    \path (t1op5) edge[->] (t1op6);
+    \path (t1op6) edge[->] (t1op7);
+
+    \path (t2) edge[->] (t2op1);
+    \path (t2op1) edge[->] (t2op2);
+    \path (t2op2) edge[->] (t2op3);
+    \path (t2op3) edge[->] (t2op4);
+    \path (t2op4) edge[->] (t2op5);
+    \path (t2op5) edge[->] (t2op6);
+    \path (t2op6) edge[->] (t2op7);
+  \end{tikzpicture}
+
+\end{frame}
+
+\begin{frame}{Causas de concorrência}
+
+  \begin{itemize}
+  \item Interrupções;
+  \item Preempção;
+  \item Multiprocessamento.
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{O que bloquear?}
+
+  \begin{itemize}
+  \item Sempre bloquear \alert{\bf dados} e {\bf não} {\color{red!90!gray}código}.
+  \end{itemize}
+
+\end{frame}
+
+
+\lecture{Mecanismos de sincronização}{sync:interface}
+
+\def\thetitle{{\em Spin lock}}
+\section{\thetitle}
+\begin{frame}[fragile]{\thetitle}
+\small
+A região crítica pode se espalhar por diversas funções, pois os \alert{dados}
+podem passar por diversas estruturas e funções. O \alert{\em spin lock}
+bloqueia uma região do código fazendo com que outras {\em threads}
+fiquem esperando até a saída do código da região crítica.\\
+\bigskip
+
+Fragmento de código C demonstrando o uso  de \alert{\em spin lock} no Linux:
+
+  \begin{lstlisting}[language=c,frame=single]
+    DEFINE_SPINLOCK(mr_lock);
+
+    spin_lock(&mr_lock);
+
+    /* regiao critica */
+
+    spin_unlock(&mr_lock);
+  \end{lstlisting}
+
+
+\end{frame}
+
+
+\def\thetitle{\em Mutex}
+\section{\thetitle}
+
+\begin{frame}[fragile]{Exclusão mútua -- mutex}{\em Mutual exclusion}
+  \small
+  Tipo especial de semáforo onde somente uma tarefa é permitida na
+  fila, ou seja, realiza a exclusão mútua entre $2$ tarefas como o
+  \alert{\em spin lock}, porém, as tarefas ficam \alert{adormecidas} ao invés de
+  ficarem esperando a liberação do bloqueio.\\
+\bigskip
+
+Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
+
+  \begin{lstlisting}[language=c,frame=single]
+    mutex_init(&mutex);
+
+    mutex_lock(&mr_lock);
+
+    /* regiao critica */
+
+    mutex_unlock(&mr_lock);
+  \end{lstlisting}
+  
+\end{frame}
+
+\def\thetitle{Semáforos}
+\section{\thetitle}
+\begin{frame}{\thetitle}
+\only<1>{
+  Mecanismo de sincronização:
+  \begin{itemize}
+  \item Criado pelo matemático e programador Edsger W. Dijkstra em 1965;
+  \item Tipo abstrato de dados composto por um valor inteiro e uma
+    fila de processos;
+  \item Somente 2 operações são permitidas pelos semáforos {\bf P} (do
+    holandês {\em proberem}, testar) e {\bf V} (do holandês {\em
+      verhogen}, incrementar).
+  \end{itemize}
+  }
+
+  \only<2>{ Quando uma tarefa tenta adquirir um bloqueio de uma região
+    crítica usando \alert{semáforo}, um contador é decrementado. Se o
+    valor do contador for negativo, a tarefa é colocada em uma fila de
+    espera. A tarefa ao invés de ficar esperando, como acontece com o
+    bloqueio ({\em spin-lock}), é colocada para dormir.  \bigskip }
+  \begin{tabbing}
+    {\bf P(S):}\= \\
+    \> {\tt S.valor} $\leftarrow$ {\tt S.valor} $-$ $1$\\
+    \> {\ se} {\tt S.}\= {\tt valor} $< 0$ \\
+    \>\> {\tt então bloqueia(T) $\wedge$ insere(T, S.fila)}\\
+    {\bf V(S):}\\
+    \> {\tt S.valor} $\leftarrow$ {\tt S.valor} $+$ $1$\\
+    \> {\tt se} {\tt S.}\= {\tt fila} $\neq$ $0$ \\
+    \>\> {\tt então retira(T, S.fila) $\wedge$ acorda(T)}\\
+  \end{tabbing}
+
+\end{frame}
+
+
+\lecture{Implementação de sincronização}{sync:implementation}
+
+\section{\insertlecture}
+
+\hspace{-1cm}\begin{frame}[fragile]{Algoritmo de Peterson}{Gary L.\ Peterson, 1983}
+  \lstset{language=C,
+    commentstyle=\tiny\color{gray},
+    columns=flexible,
+    basicstyle=\scriptsize,
+    emph={interessado},emphstyle=\color{red},
+    emph=[2]{vez},emphstyle=[2]\color{blue}
+  }
+ 
+  \begin{lstlisting}
+    #define FALSE 0
+    #define TRUE 1
+    #define N 2     /* no. de processos */
+
+    int interessado[N];
+    int vez;
+
+    void peterson(int pid) /* argumento: processo que deseja entrar na região crítica */
+    { 
+          int outro = 1 - pid;          /* variável local: no. do outro processo */
+          interessado[pid] = TRUE;  /* mostra interesse do processo atual no recurso */
+          vez = pid;                /* altera o valor da vez */ 
+      
+          while (vez==pid && interessado[outro]==TRUE) 
+          { /* espera ocupada */;}
+      
+          /* região crítica: acesso a recurso compartilhado */
+
+          interessado[pid] = FALSE; /* indica saída de pid da região crítica */
+    }
+
+ \end{lstlisting}
+ 
+\end{frame}
+
+% \begin{frame}[fragile]{Exemplo de uso com pthread}
+%   \lstinputlisting[firstline=26]{\srcdir/peterson.c}
+% \end{frame}

@@ -1,0 +1,62 @@
+
+\chapter*{Comunicação entre processos e sincronização}
+
+Comunicação entre processos (IPC -- {\it Inter-process communication})
+e sincronização são divididas em três grandes categorias:
+
+\begin{enumerate}
+
+\item Comunicação: relacionada à troca de dados entre os processos;
+\item Sincronização: coordenação das ações dos processos ou threads;
+\item Sinais: podem ser utilizados com técnica de sincronização.
+
+\end{enumerate}
+
+\section*{Comunicação}
+
+\begin{itemize}
+\item Transferência de dados: relacionada à leitura e escrita em
+  arquivos. Por exemplo, um processo escreve enquanto outro lê a
+  escrita deste processo;
+
+\item Memória compartilhada: uma região de memória contendo
+  informações é compartilhada entre os processos.
+  
+\end{itemize}
+
+\subsection*{Transferência de dados}
+
+\begin{itemize}
+
+\item Fluxo de dados: dados transferidos via {\it pipe}, FIFO ou {\it
+  socket}, onde cada operação lê um número arbitrário de bytes,
+  independente do tamanho dos blocos escritos. Como exemplo, temos a
+  concatenação de comandos shell, como o descrito a seguir, onde a
+  saída do comando {\tt ls} é escrita na entrada do comando {\tt wc}:
+
+\noindent{\tt \$ ls $|$ wc \hfill\scriptsize\# pipe de comandos shell} 
+
+\input{\imgdir/pipe.tex}
+
+\item Mensagem: os dados são trocados criando uma fila contendo-os
+  em partes de tamanho fixo chamadas mensagens. O processo lê uma
+  mensagem por vez na fila, é não é possível ler somente parte da
+  mensagem.
+
+\input{\imgdir/message.tex}
+
+\end{itemize}
+
+\subsection*{Memória compartilhada}
+ 
+Permite que dois ou mais processos compartilhem a mesma região
+ (segmento) de memória física. Como o segmento de memória
+ compartilhada faz parte da memória do espaço do usuário, não há
+ intervenção do kernel. 
+
+ Alguns processo de sincronização deve ser utilizado, pois como não há
+ mediação do kernel, os dados podem ser corrompidos pela escrita de
+ vários processos ao mesmo tempo.
+
+
+\input{\imgdir/shared-memory.tex}

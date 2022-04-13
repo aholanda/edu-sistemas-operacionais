@@ -1,0 +1,156 @@
+\section*{Processos}
+
+Os processos possuem características variadas para cada sistema operacional,
+porém, um grupo de funções foram se solidificando e praticamente ajudam a
+padronizar a semântica dos elementos do processo mesmo para diferentes sistemas
+operacionais. Grande parte desta padronização é atribuída à adesão à
+especificação \href{http://pubs.opengroup.org/onlinepubs/9699919799/}{POSIX}.
+
+\paragraph{Base} Explicar os seguintes conceitos, fundamentais para a operação
+mínima de qualquer ambiente Unix:
+
+\begin{itemize}
+\item {\em shell} como interface para o kernel
+\item estrutura de diretórios
+\item usuário {\em root}
+\item proprietários e permissões
+\item principais comandos: {\tt man, ls, cp, mv, less, cat}
+\item como descobrir a sintaxe dos comandos usando o {\tt man}
+\end{itemize}
+
+\paragraph{Init} Explicar como o kernel é inicializado usando os
+comandos:
+
+\begin{verbatim}
+    $ ls -lh /boot
+    $ uname -a
+\end{verbatim}
+
+Na linha 1 comentar sobre o {\tt grub} e o kernel que é inicializado,
+com a verificação na linha 2.
+
+\paragraph{PCB} A Listagem a seguir mostra os comandos que podem ser
+utilizados para acessar a estrutura do bloco de controle de processo (PCB) do
+Linux:
+
+\begin{verbatim}
+   $ mkdir linux && cd linux
+   $ wget https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/linux-4.4.160.tar.gz
+   $ tar xfvz linux-4.4.160.tar.gz
+   $ less -p "struct task_struct \{" include/sched.h
+\end{verbatim}
+
+Na linha 4, editamos o arquivo {\tt include/sched.h} e procuramos {\tt struct
+  task\_struct}, que atua como bloco de controle do processo.
+
+\paragraph{top} Mostrar os processos em execução utilizado o comando:
+
+\begin{verbatim}
+    $ top
+\end{verbatim}
+
+
+Na execução do comando {\tt top} selecionar o usuário digitando {\tt
+  u}. Para terminar um processo em execução, basta digitar {\tt k} e
+em seguida fornecer o identificador do processo. Verificar que os processos
+podem estar nos estados {\tt executando}, {\tt dormindo}, {\tt parado},
+ {\tt zumbi}.
+
+No comando {\tt top} verificar também:
+
+\begin{itemize}
+\item utilização de recursos
+\item uso da memória
+\item estados dos processos
+\end{itemize}
+
+\paragraph{ps} Ver os {\em snapshots} de processos usando os comandos:
+
+\begin{verbatim}
+    $ ps aux
+    $ pstree
+\end{verbatim}
+
+
+Na linha 1, comentar sobre os usuários que estão rodando processo, e
+na linha 2 mostrar a árvore de processos.
+
+\paragraph{{\tt fork()}} A Listagem~\ref{lst:fork} mostra o código utilizado
+para criar o processo utilizando a {\em chamada de sistema\/}\ {\tt fork}. A
+semântica da função {\tt fork()} deve seguir a especificação
+\href{http://pubs.opengroup.org/onlinepubs/009695399/functions/fork.html}{POSIX}.
+
+\lstinputlisting[label=lst:fork,caption={Criação de um processo usando a função {\tt fork()}.}]{../proc/fork.c} 
+
+% \paragraph{{\tt fork()} II} A função {\tt fork()} cria um novo processo, sendo que
+% todo processo deve ter um processo pai, que é a cópia ``virtual'' do processo
+% pai, com relação ao código, área de dados estáticos, {\em stack} e {\em heap}. O
+% processo filho irá se diferenciar do processo pai somente nas páginas de memória
+% que forem alteradas. Este mecanismo é conhecido como {\em copy-on-write}
+% (cópia-durante-escrita), pois somente as páginas em que houve escrita no
+% processo filho serão duplicadas, possuindo sua própria cópia. A sequência de
+% execução entre o processo pai e filho é indeterminada, dependendo do
+% escalonamento. O programa da Listagem~\ref{lst:seq} demonstra estas
+% características.
+
+%\clstsettings
+%\lstinputlisting[label=lst:seq,caption={Sequência de execução dos processo pai e filho.}]{../src/proc-sequencia-fork.c} 
+Enquanto o processo estiver rodando algumas informações do PCB podem ser vistas
+utilizando o comando:
+
+\begin{verbatim}
+    $ cat /proc/PID/status
+\end{verbatim}
+
+
+Por exemplo, excutando o comando a seguir para um processo cujo {\tt PID} é {\tt
+  19599}, obtemos a saída com informações sobre o processo. As palavras na
+segunda coluna foram inseridos para explicar o significado de cada linha.\\
+
+\begin{verbatim}
+    $ cat /proc/19599/status
+\end{verbatim}
+
+\begin{tabular}{ll}
+\tt Name:   smtpd & \footnotesize nome do programa\\
+\tt State:  S (sleeping) & \footnotesize estado\\
+\tt Tgid:   19599& \footnotesize ID do grupo da \thread\\
+\tt Pid:    19599& \footnotesize \thread{} ID\\
+\tt PPid:   4121& \footnotesize PID do processo pai\\
+%\tt TracerPid:      0& \footnotesize \\
+\tt Uid:    108     108     108     108& \footnotesize ID do usuário\\
+\tt Gid:    124     124     124     124&\footnotesize ID do grupo \\
+\tt FDSize: 128& \footnotesize número de descritores de arquivos alocados\\
+\tt Groups: 124 & \footnotesize IDs de grupos suplementares\\
+\tt VmPeak:    44596 kB&\footnotesize pico do tamanho da memória virtual\\
+\tt VmSize:    44592 kB& \footnotesize memória virtual usada atualmente\\
+\tt VmLck:         0 kB& \footnotesize memória bloqueada\\
+%\tt VmPin:         0 kB& \footnotesize\\
+%\tt VmHWM:      4088 kB& \footnotesize\\
+%\tt VmRSS:      4088 kB& \footnotesize\\
+\tt VmData:      588 kB&\footnotesize tamanho do segmento de dados\\
+\tt VmStk:       136 kB& \footnotesize tamanho da {\em stack}\\
+\tt VmExe:       208 kB& \footnotesize tamanho do texto (código executável)\\
+\tt VmLib:      6436 kB& \footnotesize tamanho da biblioteca compartilhada\\
+\tt VmPTE:       100 kB& \footnotesize Tamanho da tabela de páginas \\
+%\tt VmSwap:        0 kB& \footnotesize\\
+\tt\color{gray} Threads:        1&\color{gray} \footnotesize número de \thread{}s\\
+\tt\color{gray} SigQ:   0/23781& \color{gray}\footnotesize atual/máx. tamanho da fila de sinais\\
+\tt\color{gray} SigPnd: 0000000000000000&\color{gray} \footnotesize Sinais pendentes por \thread\\
+\tt\color{gray} ShdPnd: 0000000000000000&\color{gray} \footnotesize Sinais pendentes por processo\\
+\tt\color{gray} SigBlk: 0000000000000000&\color{gray} \footnotesize Sinais bloqueados\\
+\tt\color{gray} SigIgn: 0000000001001000&\color{gray} \footnotesize Sinais ignorados\\
+\tt\color{gray} SigCgt: 0000000180002000&\color{gray} \footnotesize Sinais capturados\\
+%\tt CapInh: 0000000000000000& \footnotesize \\
+%\tt CapPrm: 0000000000000000& \footnotesize\\
+%\tt CapEff: 0000000000000000& \footnotesize\\
+%\tt CapBnd: ffffffffffffffff& \footnotesize\\
+\tt Cpus\_allowed:   f& \footnotesize número de CPUs permitidas\\
+\tt Cpus\_allowed\_list:      0-3&\footnotesize número de CPUs permitidas, formato lista\\
+\tt Mems\_allowed:   00000000,00000001& \footnotesize nós de memória permitidos\\
+\tt Mems\_allowed\_list:      0&\footnotesize lista de nós de memória permitidos\\
+\tt voluntary\_ctxt\_switches:        5& \footnotesize trocas de contexto voluntárias\\
+\tt nonvoluntary\_ctxt\_switches:     5& \footnotesize trocas de contextos
+forçadas (escalonador)\\
+\end{tabular}
+

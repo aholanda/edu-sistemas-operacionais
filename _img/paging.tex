@@ -1,0 +1,63 @@
+\def\W{1cm}
+\def\H{0.25cm}
+\def\w{.25cm}
+\def\h{\w}
+\usetikzlibrary{matrix,shapes}
+\begin{tikzpicture}[every node/.style={font=\scriptsize},
+  page/.style={minimum width=\W,minimum height=\H,draw},
+  00/.style={fill=yellow}, 
+  01/.style={fill=green}, 
+  10/.style={fill=cyan},
+  11/.style={fill=black},
+  memcel/.style={minimum width=\w,minimum height=\h,text=white,font=\bf,draw},
+  bitlabel/.style={font=\scriptsize, align=center,minimum height=2*\H},
+  ptheader/.style={bitlabel, rotate=90, font=\tiny, draw}
+  ]
+  \scriptsize
+  \newcounter{vmc}\setcounter{vmc}{0}
+  \foreach \x/\addr in {0/11,1/10,2/01,3/00} {
+    \node[page,\addr] (vm\x) at (0,\x*\H) {};
+    \node[font=\tt] at (-\W/1.5,\x*\H) {\addr};
+    \addtocounter{vmc}{1};
+  }
+  \node[font=\footnotesize,align=center, text width=\W] [above of=vm3,yshift=-\h] {memória virtual};
+      
+  \matrix at (\W/8,-10*\H) (pagetable) [matrix of nodes,column sep=\w,minimum width=2*\w,fill=yellow!50] {
+    \node[ptheader] {bit de validade}; & \node[ptheader] {bit de sujeira}; & 
+    \node[ptheader] {endereço lógico}; & \node[ptheader] {endereço físico};\\
+    1 & 0 & \tt 00 & (3,2)\\
+    1 & 0 & \tt 01 & (2,6)\\
+    0 & 0 & \tt 10 & (5,3)\\
+    1 & \node (ptbase) {1}; & \tt 11 & (1,0)\\
+  };
+  \node [below of=ptbase] {Tabela de páginas};
+  
+
+  \def\deltax{4.5}
+  \def\PHYSMX{\deltax*\W+\x*\w}
+  \foreach \x in {0,...,7} {
+    \node at (\PHYSMX,6*\H) {\x};
+    \node at (.925*\deltax*\W,\h*-\x+5.*\H) {\x};
+    \foreach \y in {0,...,7} {
+      \node[memcel] (physmem\x\y) at (\PHYSMX,\y*\h-2*\H) {};
+    }
+  }
+  \node[font=\footnotesize] [above of=physmem37] {DRAM};
+
+  
+  \node[memcel,00] at (physmem35) {};
+  \node[memcel,01] at (physmem21) {};
+  %\node[memcel,10] at (physmem54) {}; % stored in the the disk
+  \node[memcel,11,font=\tiny] at (physmem17) {8};
+
+  \node[shape border rotate=90,minimum height=6*\H,minimum width=2*\W,cylinder,draw] (disk)
+  [below of=physmem30, xshift=\W/6, yshift=-2.5*\H]  {};
+  \node[font=\footnotesize] [below of=disk,yshift=-1.5*\H] {disco magnético};
+  
+  \foreach \x/\addr in {-6/00,-5/01,-4/10,-3/11} {
+    \node[memcel,\addr,font=\tiny] [right of=disk,xshift=\x*\w] {\ifnum\addr=11 -1\fi};
+  }
+\end{tikzpicture}
+% Local Variables:
+% main: ../notes
+% End:

@@ -1,0 +1,50 @@
+
+\section*{Bloqueio e Sincronização}
+
+\paragraph{mutex}~Baixe os códigos usando os comandos\medskip
+
+\CMD{wget https://raw.githubusercontent.com/ajholanda/edu-os/master/sync/incr-nomutex.c\\
+  \$ wget https://raw.githubusercontent.com/ajholanda/edu-os/master/sync/incr-mutex.c}
+
+\noindent e analise
+
+\begin{itemize}
+\item como as threads foram criadas,
+\item a função de {\tt pthread\_join()},
+\item qual a função invocada pela thread e quais seus argumentos.
+\end{itemize}
+
+\noindent Compile os códigos usando os comandos\medskip
+
+\CMD{gcc -pthread -o incr-nomutex incr-nomutex.c\\
+  \$ gcc -pthread -o incr-mutex incr-mutex.c}
+
+\noindent e execute-os fornecendo os seguintes valores como
+parâmetros:
+
+\begin{center}
+  $\langle 100, 1.000, 10.000, 100.000, 1.000.000, 10.000.000, 100.000.000 \rangle$.
+\end{center}
+
+\noindent Verifique o tempo de execução de cada parâmetro usando o comando {\tt
+  time} e compare o valor final com o esperado.
+
+\paragraph{kernel}
+
+Baixar o código do kernel do Linux usando o comando 
+
+\CMD{wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.15.1.tar.xz}
+
+\noindent e descompactá-lo no diretório atual com o comando
+
+\CMD{tar xfvJ linux-3.15.1.tar.xz $\qquad$\#.}
+
+\noindent Entre no diretório contendo o código fonte do kernel e
+verificque as implementações dos principais mecanismos de
+sincronização usando os comandos
+
+\CMD{cd cd linux-3.15.1/kernel/\\
+  \$  cd locking/\\
+  \$  less spinlock.c\\
+  \$ less semaphore.c\\
+  \$ less mutex.c $\qquad$\#.}
