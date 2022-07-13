@@ -20,10 +20,10 @@ TypeInvariant ==
         /\ runQ \in Seq(Proc)
 ----------------------------------------------------------------------------------
 EnqueueProcess(p) ==
-/\ p.state = "sleeping"
+/\ p.state = "interruptible"
 /\ p.state' = "running"
 \*/\ runQ \U {p}
 DequeueProcess(p) == 
-/\ p.state \in {"running", "sleeping"}
+/\ p.state \in {"running", "interruptible"}
 /\ p.state = "running"
 ==================================================================================
