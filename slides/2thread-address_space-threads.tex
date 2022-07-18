@@ -1,0 +1,29 @@
+
+%%% Local Variables:
+%%% mode: latex
+%%% End:
+
+
+\begin{tikzpicture}[exec/.style={color=red,minimum width=4cm,minimum height=2cm,draw}]
+  \tikzset{every node/.style={font=\scriptsize},
+    userspace/.style={color=blue,fill=blue!40, minimum width=3cm,
+      minimum height=7cm,text width=2.5cm,anchor=north},
+    resource/.style={text width=2cm, minimum width=2.5cm,
+      minimum height=1.5cm,fill=white}}
+  \colorlet{calcula}{green!50!black}
+  \colorlet{io}{blue!50!black}
+  
+  \node[userspace] (useraddress) {};
+  \node[] (label) [above of=useraddress,yshift=3cm] {espaço de endereçamento do usuário};
+  \node[color=blue,resource,align=left] (io) [below of=label,yshift=-1cm] {escreve\_saida: \\ \tiny \hspace{.3cm} FILE $*$arquivo\\\hspace{.3cm} char $*$conteudo};
+   \node [left of=io,xshift=-1cm,text width=1.5cm] {\bf Thread1: stack};
+   \node<1>[exec] (exec) at (io) {};
+   \node<1>[color=red] [right of=exec,xshift=1.25cm,yshift=1.25cm] {\bf executando};
+   \node[calcula,resource,align=left] (calcula) [below of=io,yshift=-1cm] {calcula: \\ \tiny \hspace{.3cm} int resultado\\\hspace{.3cm} int numero};
+   \node<2>[exec] (exec) at (calcula) {};
+   \node<2>[color=red] [right of=exec,xshift=1.25cm,yshift=1.25cm] {\bf executando};
+    \node [left of=calcula,xshift=-1cm,text width=1.5cm] {\bf Thread2: stack};
+    \node[resource,align=left] (code) [below of=calcula,yshift=-1cm] 
+    {main() $\{$\\\hspace{.2cm}{\tiny \alert<1>{escreve\_saida();} \\\hspace{.2cm}\alert<2>{calcula();}\\$\}$}};
+    \node [left of=code,xshift=-1cm] {\bf código};
+  \end{tikzpicture}
