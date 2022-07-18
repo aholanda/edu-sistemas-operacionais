@@ -6,6 +6,7 @@
 main.pdf
 *.snm
 *.toc
+*.vrb
 
 # Object files
 *.o
