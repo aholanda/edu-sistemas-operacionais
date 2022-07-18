@@ -1,16 +1,15 @@
 % Run
 % xelatex "\def\ishandout{1} \input{main.tex}"
 % to disable transitions
-
 \ifdefined\ishandout
   \documentclass[handout]{beamer}
 \else
+  % ignorenonframetext as argument to beamer causes no page of output
   \documentclass[]{beamer}
 \fi
- \usecolortheme{beaver}
+\usecolortheme{beaver}
 \setbeamercovered{highly dynamic}
 
-% Dependencies
 \usepackage{fontspec} % use XeLaTeX
 \usepackage[]{polyglossia}
 \setdefaultlanguage{brazil}
@@ -26,10 +25,6 @@
   
   \usepackage{ifthen} % \ifthenelse
   \usepackage{animate}
-
-  % FONTS
-  \font\fiverm=cmr5
-  \font\ninerm=cmr9
 
   % Definitions
   \author{Adriano J. Holanda}%\\{\scriptsize \url{http://holanda.xyz}}}
@@ -64,33 +59,9 @@
   %     \includegraphics[#1]{#2}}%
   % }
 
-\def\lecturetitle#1#2{\title{{\large\bf#1}\\{\small [#2]}}}
-
-\def\transitionslide#1{\frame{\author{}\title{\LARGE#1}\date{}\maketitle}}
-
-  \def\shcmd#1{
-    \begingroup
-    \bigskip\color{gray}
-    {\tt \$~#1}
-    \bigskip
-    \endgroup
-  }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-%% DEFINITIONS
-\def\so{{\sc SO}}
-\def\transition#1#2{\lecture{#1}{#2}\section{#1}
-  \frame{\author{}\date{}\institute{}\title{\insertlecture}\maketitle}}
-%%%% LISTINGS
-\lstset{language=C,basicstyle=\small}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \pgfdeclareimage[width=2.5cm]{keyboard}{teclado.png}
 \pgfdeclareimage[width=1.5cm]{processor}{processor.png}
-
-\newcounter{saveenumi}% save counter on enumerate across frames
-\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
-\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
-\resetcounteronoverlays{saveenumi}
 
 \begin{document}
 \input proc
