@@ -115,6 +115,8 @@ A tabela de dados do processo contem o valor ou a localização:
   \framesubtitle{Derivados do Unix: \lstinline{fork()}}
   \begin{columns}
     \begin{column}{.6\textwidth}\scriptsize
+\noindent Fragmento de código para %
+criação de processo.\\\bigskip      
 \begin{lstlisting}
 int pid = fork();
 if(pid > 0){
@@ -127,12 +129,15 @@ if(pid > 0){
 } else {
     printf("erro\n");
 }
-      \end{lstlisting}
-    \end{column}
+\end{lstlisting}
+\end{column}
     \begin{column}{.4\textwidth}
       \includegraphics[scale=.525]{fork.png}
     \end{column}
   \end{columns}
+
+  %\hfill
+  %\noindent $^\star$ {\tiny Fonte: {\tt https://pdos.csail.mit.edu/6.S081/2020/xv6/book-riscv-rev1.pdf}}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
