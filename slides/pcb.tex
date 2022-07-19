@@ -1,5 +1,5 @@
-\def\recbase{5}
-\def\recheight{1}
+\def\recbase{4.5}
+\def\recheight{.9}
 
 \begin{center}
   \begin{tikzpicture}[every rectangle/.style={minimum width=\recbase},
@@ -17,6 +17,6 @@
     memória};
     \draw[var] (0,1.5) rectangle (\recbase,2+\recheight) node[midway] {\scriptsize{lista de
     arquivos abertos}};
-    \draw[mem] (0,0) rectangle (\recbase,1.5*\recheight) node[midway] {$\ldots$};
+    \draw[mem] (0,0) rectangle (\recbase,1.75*\recheight) node[midway] {$\ldots$};
   \end{tikzpicture}
 \end{center}
