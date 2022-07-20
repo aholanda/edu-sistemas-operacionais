@@ -169,27 +169,20 @@
     \path (t2op5) edge[->] (t2op6);
     \path (t2op6) edge[->] (t2op7);
   \end{tikzpicture}
-
 \end{frame}
 
 \begin{frame}{Causas de concorrência}
-
-  \begin{itemize}
-  \item Interrupções;
-  \item Preempção;
-  \item Multiprocessamento.
-  \end{itemize}
-
+  \begin{description}
+  \item[Interrupções]: uma variável pode ter seu valor alterado no
+    registrador, porém ainda não atualizado na memória no momento
+    da interrupção;
+  \item[Preempção]: a mesma ação do item anterior, porém quem interrompe
+    o fluxo de execução é o escalonador;
+  \item[Multiprocessamento]: a qualquer momento uma variável pode ter
+    seu valor alterado por uma CPU pode, ao mesmo tempo que em outra
+    CPU a mesma variável é lida ou alterada.
+  \end{description}
 \end{frame}
-
-\begin{frame}{O que bloquear?}
-
-  \begin{itemize}
-  \item Sempre bloquear \alert{\bf dados} e {\bf não} {\color{red!90!gray}código}.
-  \end{itemize}
-
-\end{frame}
-
 
 \lecture{Mecanismos de sincronização}{sync:interface}
 
@@ -203,7 +196,7 @@ bloqueia uma região do código fazendo com que outras {\em threads}
 fiquem esperando até a saída do código da região crítica.\\
 \bigskip
 
-Fragmento de código C demonstrando o uso  de \alert{\em spin lock} no Linux:
+Fragmento de código C demonstrando o uso de \alert{\em spin lock} no Linux:
 
   \begin{lstlisting}[language=c,frame=single]
     DEFINE_SPINLOCK(mr_lock);
@@ -214,7 +207,6 @@ Fragmento de código C demonstrando o uso  de \alert{\em spin lock} no Linux:
 
     spin_unlock(&mr_lock);
   \end{lstlisting}
-
 
 \end{frame}
 
@@ -277,6 +269,11 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BUFFER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifnum1=2
 
 \lecture{Implementação de sincronização}{sync:implementation}
 
@@ -320,3 +317,4 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 % \begin{frame}[fragile]{Exemplo de uso com pthread}
 %   \lstinputlisting[firstline=26]{\srcdir/peterson.c}
 % \end{frame}
+\fi
