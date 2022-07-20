@@ -5,29 +5,28 @@
 int n=0;
 int spin=0;
 
-#define LOCK
-#ifdef LOCK
-// Não evita concorrência de processadores
-#define BLOQUEIA() do {			\
+#define SPINLOCK
+#ifdef SPINLOCK
+#define LOCK() do {			\
     while (spin != 0) ;			\
     spin = 1; 				\
 } while(0)
 
-#define LIBERA() spin=0
+#define UNLOCK() spin=0
 #else
-#define BLOQUEIA() ;
-#define LIBERA() ;
+#define LOCK() ;
+#define UNLOCK() ;
 #endif
 
 void *fn() {
   int i;
 
-  BLOQUEIA();
+  LOCK();
   for (i=0; i<100000000; i++) {
     n++; 
   }
   printf("%d\n", n);
-  LIBERA();
+  UNLOCK();
 }
 
 int main(int argc, char**argv) {
