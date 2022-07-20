@@ -1,14 +1,16 @@
 % Run
-% xelatex "\def\ishandout{1} \input{main.tex}"
-% to disable transitions
-\ifdefined\ishandout
-  \documentclass[handout]{beamer}
+% xelatex "\def\isarticle{1} \input{main.tex}"
+% generates the article version of the document
+\ifdefined\isarticle
+  \documentclass[a4paper]{article}
+  \usepackage{beamerarticle}
+  \usepackage{fullpage}
 \else
   % ignorenonframetext as argument to beamer causes no page of output
   \documentclass[]{beamer}
+  \usecolortheme{beaver}
+  \setbeamercovered{highly dynamic}
 \fi
-\usecolortheme{beaver}
-\setbeamercovered{highly dynamic}
 
 \usepackage{fontspec} % use XeLaTeX
 \usepackage[]{polyglossia}
@@ -24,7 +26,6 @@
     commentstyle=\scriptsize\color{black!50},mathescape}
   
   \usepackage{ifthen} % \ifthenelse
-  \usepackage{animate}
 
   % Definitions
   \author{Adriano J. Holanda}%\\{\scriptsize \url{http://holanda.xyz}}}
@@ -41,33 +42,16 @@
       index/.style={minimum width=.5cm}}
   }
 
-  % only title frames
-  \def\onlytitleframe#1{\author{}\date{}\title{#1}\maketitle}
-
-  % \usepackage{pdftexcmds} % \pdf@strcmp \pdf@filemoddate
-  % \newcommand{\executeiffilenewer}[3]{%
-  %   \ifnum\pdf@strcmp{\pdf@filemoddate{#1}}%
-  %   {\pdf@filemoddate{#2}}>0%
-  %   {\immediate\write18{#3}}\fi%
-  % }
-  % includesvg[includegraphics args]{file} command (linux-version)
-  % \newcommand{\includesvg}[2][]{%
-  %   \executeiffilenewer{#2.svg}{#2.pdf}{%
-  %     /usr/bin/inkscape -z -C --file="#2.svg" --export-pdf="#2.pdf" > /tmp/#2.log}%
-  %   \ifthenelse{\equal{#1}{}}{%
-  %     \includegraphics{#2}}{%
-  %     \includegraphics[#1]{#2}}%
-  % }
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \pgfdeclareimage[width=2.5cm]{keyboard}{teclado.png}
 \pgfdeclareimage[width=1.5cm]{processor}{processor.png}
 
 \begin{document}
-\input proc
-\input thread
+
+%\input proc
+%\input thread
 %\input sched
-%\input sync
+\input lock
 %\input deadlock
 %\input mem
 %\input address-space
