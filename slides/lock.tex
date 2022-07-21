@@ -1,8 +1,4 @@
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: main
-%%% End:
+\lstset{language=C}
 
 \lecture{Sincronização e concorrência}{sync:titlepage}
 
@@ -186,30 +182,148 @@
 
 \lecture{Mecanismos de sincronização}{sync:interface}
 
-\def\thetitle{{\em Spin lock}}
-\section{\thetitle}
-\begin{frame}[fragile]{\thetitle}
-\small
-A região crítica pode se espalhar por diversas funções, pois os \alert{dados}
-podem passar por diversas estruturas e funções. O \alert{\em spin lock}
-bloqueia uma região do código fazendo com que outras {\em threads}
-fiquem esperando até a saída do código da região crítica.\\
-\bigskip
+\subsection{\insertlecture}
 
-Fragmento de código C demonstrando o uso de \alert{\em spin lock} no Linux:
+\begin{frame}[fragile]
+  \frametitle{{\em Spin lock}} \small O \alert{\em spin lock} bloqueia
+  uma região do código fazendo com que outras {\em threads}
+  fiquem esperando em {\em loop} até a saída do código da região crítica.\\
+  \bigskip
 
-  \begin{lstlisting}[language=c,frame=single]
-    DEFINE_SPINLOCK(mr_lock);
-
-    spin_lock(&mr_lock);
-
-    /* regiao critica */
-
-    spin_unlock(&mr_lock);
-  \end{lstlisting}
-
+  \begin{columns}
+\begin{column}{.4\textwidth}
+\begin{lstlisting}[framexleftmargin=5mm, frame=shadowbox,
+    rulesepcolor=\color{red}]
+  void lock(int *spin) {
+    for (;;) {
+      if (*spin == 0) {
+        *spin = 1;
+        break;
+      }
+    }
+  }
+  void unlock(int *spin) {
+    *spin = 0;
+  }
+\end{lstlisting}
+\end{column}
+\begin{column}<2>{.4\textwidth}
+  \begin{lstlisting}[framexleftmargin=5mm, frame=shadowbox,
+    rulesepcolor=\color{blue}]
+  // variável global
+  struct {
+    int id;
+    // ...
+    int spin;
+  } proc;
+  // ...
+  // usando o bloqueio  
+  lock(&proc->spin);
+  // região crítica
+  proc->id = 12345;
+  unlock(&proc->spin);
+\end{lstlisting}
+\end{column}
+  \end{columns}
 \end{frame}
 
+\lstset{morecomment=[s][\color{red}]{/*+}{*/}}
+\begin{frame}[fragile]
+  \frametitle{{\em Spin lock}} \framesubtitle{{\em Test and set}}
+  \small Duas ou mais {\em threads} podem executar ao mesmo tempo em
+  CPUs diferentes as linhas 4 e 5, obtendo o bloqueio.
+  \only<2>{{\color{blue} A solução é usar a instrução de CPU {\tt
+      test and set} que executa as operações 4 e 5 sem interrupção.}}
+  
+  \bigskip
+
+  \begin{columns}
+\begin{column}{.45\textwidth}
+\begin{lstlisting}[framexleftmargin=5mm, frame=shadowbox,
+    rulesepcolor=\color{red}]
+  void lock(int *spin) {
+    for (;;) {
+      /*+ início: concorrência */
+      if (*spin == 0) {
+        *spin = 1;
+      /*+ fim: concorrência */        
+        break;
+      }
+    }
+  }
+\end{lstlisting}
+\end{column}
+\begin{column}<2>{.45\textwidth}
+\begin{lstlisting}[framexleftmargin=5mm, frame=shadowbox,
+    rulesepcolor=\color{blue},basicstyle={\scriptsize\color{blue}}]
+  // comportamento da instrução
+  // de hardware test and set
+  int test_and_set(int *m) {
+    int old = *m;
+    *m = 1;
+    return old;
+  }
+  
+  void lock(int *spin) {
+    for (;;) {
+      if (test_and_set(&spin) == 0)
+        break;
+    }
+  }
+\end{lstlisting}
+\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Semáforo}
+  \small O \alert{\em semáforo} foi proposto por Dijkstra~(1965)
+  e usa um contador para assegurar que somente um fluxo de execução
+  atinja a região crítica.
+  \bigskip
+
+  \begin{columns}
+\begin{column}{.5\textwidth}
+  \begin{lstlisting}[framexleftmargin=5mm,frame=shadowbox,
+    rulesepcolor=\color{red}]
+  void lock(int *sema) { // P()
+    while (*sema < 0)  ;
+    *sema--;
+  }
+  void unlock(int *sema) { // V()
+    *sema++;
+  }
+\end{lstlisting}
+\end{column}
+\begin{column}<2>{.4\textwidth}
+  \begin{lstlisting}[framexleftmargin=5mm, frame=shadowbox,
+    rulesepcolor=\color{blue}]
+  // variável global
+  struct {
+    int id;
+    // ...
+    int sema;
+  } proc;
+  // ...
+  // usando o bloqueio  
+  lock(&proc->sema);
+  // região crítica
+  proc->id = 12345;
+  unlock(&proc->sema);
+\end{lstlisting}
+\end{column}
+  \end{columns}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% BUFFER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifnum1=2
+
+\lecture{Implementação de sincronização}{sync:implementation}
+
+\section{\insertlecture}
 
 \def\thetitle{\em Mutex}
 \section{\thetitle}
@@ -269,15 +383,6 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% BUFFER
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\ifnum1=2
-
-\lecture{Implementação de sincronização}{sync:implementation}
-
-\section{\insertlecture}
 
 \hspace{-1cm}\begin{frame}[fragile]{Algoritmo de Peterson}{Gary L.\ Peterson, 1983}
   \lstset{language=C,
@@ -317,4 +422,12 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 % \begin{frame}[fragile]{Exemplo de uso com pthread}
 %   \lstinputlisting[firstline=26]{\srcdir/peterson.c}
 % \end{frame}
+
+
 \fi
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: main
+%%% End:
+
