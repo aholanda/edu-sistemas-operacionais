@@ -217,7 +217,7 @@
     int spin;
   } proc;
   // ...
-  // usando o bloqueio  
+  // usando o bloqueio
   lock(&proc->spin);
   // região crítica
   proc->id = 12345;
@@ -234,7 +234,7 @@
   CPUs diferentes as linhas 4 e 5, obtendo o bloqueio.
   \only<2>{{\color{blue} A solução é usar a instrução de CPU {\tt
       test and set} que executa as operações 4 e 5 sem interrupção.}}
-  
+
   \bigskip
 
   \begin{columns}
@@ -246,7 +246,7 @@
       /*+ início: concorrência */
       if (*spin == 0) {
         *spin = 1;
-      /*+ fim: concorrência */        
+      /*+ fim: concorrência */
         break;
       }
     }
@@ -263,7 +263,7 @@
     *m = 1;
     return old;
   }
-  
+
   void lock(int *spin) {
     for (;;) {
       if (test_and_set(&spin) == 0)
@@ -279,7 +279,8 @@
   \frametitle{Semáforo}
   \small O \alert{\em semáforo} foi proposto por Dijkstra~(1965)
   e usa um contador para assegurar que somente um fluxo de execução
-  atinja a região crítica.
+  atinja a região crítica. \only<1>{As linhas 2 e 3 devem ser executadas
+  sem interrupção.}
   \bigskip
 
   \begin{columns}
@@ -305,7 +306,7 @@
     int sema;
   } proc;
   // ...
-  // usando o bloqueio  
+  // usando o bloqueio
   lock(&proc->sema);
   // região crítica
   proc->id = 12345;
@@ -313,6 +314,34 @@
 \end{lstlisting}
 \end{column}
   \end{columns}
+\end{frame}
+
+\lstset{morecomment=[s][\color{gray}]{(*}{*)}}
+\begin{frame}[fragile]
+  \frametitle{Monitores}
+
+  Método conceitual proposto por Hoare~(1974) para estruturar o acesso
+  concorrente aos recursos de um sistema operacional.\bigskip
+
+  \centering
+  \begin{lstlisting}[morekeywords={begin,end,%
+      monitor,procedure},frame=single]
+    single resource: monitor     (* identificação do monitor *)
+    begin busy: Boolean;         (* variáveis *)
+          nonbusy : condition;
+    procedure acquire;           (* procedimentos *)
+          begin if busy then nonbusy.wait;
+                   busy := true
+          end;
+    procedure release;
+          begin busy := false;
+                nonbusy.signal
+          end;
+    busy : = false;              (* inicialização *)
+    end single resource
+    (* Se houver mais de um processo na espera,
+       o mais antigo adquire o recurso. *)
+  \end{lstlisting}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -347,7 +376,7 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 
     mutex_unlock(&mr_lock);
   \end{lstlisting}
-  
+
 \end{frame}
 
 \def\thetitle{Semáforos}
@@ -392,7 +421,7 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
     emph={interessado},emphstyle=\color{red},
     emph=[2]{vez},emphstyle=[2]\color{blue}
   }
- 
+
   \begin{lstlisting}
     #define FALSE 0
     #define TRUE 1
@@ -402,21 +431,21 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
     int vez;
 
     void peterson(int pid) /* argumento: processo que deseja entrar na região crítica */
-    { 
+    {
           int outro = 1 - pid;          /* variável local: no. do outro processo */
           interessado[pid] = TRUE;  /* mostra interesse do processo atual no recurso */
-          vez = pid;                /* altera o valor da vez */ 
-      
-          while (vez==pid && interessado[outro]==TRUE) 
+          vez = pid;                /* altera o valor da vez */
+
+          while (vez==pid && interessado[outro]==TRUE)
           { /* espera ocupada */;}
-      
+
           /* região crítica: acesso a recurso compartilhado */
 
           interessado[pid] = FALSE; /* indica saída de pid da região crítica */
     }
 
  \end{lstlisting}
- 
+
 \end{frame}
 
 % \begin{frame}[fragile]{Exemplo de uso com pthread}
@@ -430,4 +459,3 @@ Fragmento de código C mostrando o uso da \alert{\em mutex} no SO Linux:
 %%% mode: latex
 %%% TeX-master: main
 %%% End:
-
