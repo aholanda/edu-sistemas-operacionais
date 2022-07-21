@@ -40,3 +40,5 @@ main.pdf
 
 # Debug files
 *.dSYM/
+gdb.*
+.gdb*
