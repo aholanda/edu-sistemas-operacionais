@@ -42,3 +42,6 @@ main.pdf
 *.dSYM/
 gdb.*
 .gdb*
+
+# Manuals
+listings.pdf
