@@ -88,7 +88,7 @@
 \part{Interrupções e DMA}
 \frame{\partpage}
 
-\transition{Interrupções}{IRQ}
+\lecture{Interrupções}
 
 \begin{frame}{\insertlecture} 
   \begin{itemize}
@@ -153,7 +153,7 @@
 \end{frame}
 
 % retirado de Linux Device Drivers
-\transition{Acesso Direto à Memória}{DMA}
+\lecture{Acesso Direto à Memória}
 
 \begin{frame}{\insertlecture}
 
@@ -204,7 +204,7 @@
 
 \end{frame}
 
-\transition{Dispositivos de bloco}{block}
+\lecture{Dispositivos de bloco}
 
 \begin{frame}{\insertlecture}{Introdução}
 
@@ -244,15 +244,15 @@
 \part{Dispositivo de bloco}
 \frame{\partpage}
 
-\transition{Dispositivos de Bloco: Disco Rígido}{io:dev:block}
+\lecture{Dispositivos de Bloco: Disco Rígido}
 
 \begin{frame}{Busca em disco rígido}{\only<1>{Trilha}\only<2>{Setor}\only<3>{Cabeçote de leitura e escrita}}
   \begin{center}
-    \input{../../chard-disk}
+    \input{hard-disk}
   \end{center}
 \end{frame}
 
-\transition{Escalonamento de disco}{diskScheduling}
+\lecture{Escalonamento de disco}
 
 \begin{frame}{Escalonamento das requisições de disco}
   
@@ -467,35 +467,5 @@
     \end{enumerate}
   \end{enumerate}
   
-\end{frame}
-
-\end{document}
-
-\transition{RAID}{RAID}
-
-\begin{frame}{RAID 0}
-  
-  \includegraphics[scale=.3]{raid0.png}
-
-\end{frame}
-
-
-\begin{frame}{RAID 1}
-  
-  \includegraphics[scale=.3]{raid1.png}
-
-\end{frame}
-
-
-\begin{frame}{RAID 5}
-  
-  \includegraphics[scale=.3]{raid5.png}
-
-\end{frame}
-
-\begin{frame}{RAID 0+1}
-  
-  \includegraphics[scale=.3]{raid01.png}
-
 \end{frame}
 
