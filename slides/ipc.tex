@@ -1,23 +1,4 @@
 
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: t
-%%% End: 
-
-
-\documentclass{beamer}
-
-\usepackage[brazil]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{tikz}
-\usetikzlibrary{positioning}
-
-\author{Adriano J. Holanda}
-\institute{}
-\date{\today}
-
-\begin{document}
-
 \def\lecturetitle{Comunicação entre processos ({\em Interprocess
     Communication -- IPC})}
 \part{\lecturetitle}
@@ -125,48 +106,18 @@ POSIX ({\em Portable Operating System Interface})
 \end{frame}
 
 \begin{frame}{Pipes}
-\small
-  Propiciam comunicação entre os processos tendo descritores de
-  arquivos ({\em file descriptor -- fd}) como interface entre os
+  \small Propiciam comunicação síncrona entre os processos tendo
+  descritores de arquivos ({\em file descriptor -- fd}) como interface
+  entre os
   processos e o kernel que gerencia a comunicação.\\
-\smallskip
-Exemplo:\\
-  \begin{center}
-  \includegraphics[scale=.475]{zfig-ipc-pipe.pdf}
+  \smallskip
+  Exemplo:\\
+\begin{center}
+  figure
+  \input{pipe}
 \end{center}
 
 API Posix $\rightarrow$ {\tt int pipe(int fd[2]);}
-
-\end{frame}
-
-\begin{frame}{Mensagens}
-  \small
-  Dois ou mais processos podem se comunicar utilizando um sistema
-  comum de fila de mensagens.
-
-  \begin{center}
-  \begin{tikzpicture}
-    \tikzset{mod/.style={rounded corners,text width=1.75cm,draw},
-    send/.style={fill=blue!20},rec/.style={fill=yellow!50}}
-    \node[mod,send] (sp) {Processo emissor};%sending process
-    \node[mod,rec] (rp) [right of=sp,xshift=40mm] {Processo
-      receptor};%receiving process
-    \node[mod,send] (mps) [below of=sp,yshift=-10mm] {Módulo de envio de mensagens};
-    \node[mod,rec] (mpr) [below of=rp,yshift=-10mm] {Módulo de recepção de
-      mensagens};
-    \node[draw,minimum width=1cm,fill=green!20] (type) [below of=mps,yshift=-10mm,xshift=10mm] {Tipo};
-    \node[draw,minimum width=3cm] (mesg) [right of=type,xshift=10mm] {Mensagem};
-    
-    \draw[->,>=latex] (sp) -- (mps);
-    \draw[<-,>=latex] (rp) -- (mpr);
-    \draw[->,>=latex] (0,-5) -- (5,-5);
-    \node at (2.5,-4.75) {\footnotesize fila de mensagens};
-  \end{tikzpicture}
-\end{center}
-
-API Posix para:\\
- \alert{enviar} mensagens $\rightarrow$ {\tt int mq\_send();}\\
-\alert{receber} mensagens $\rightarrow$ {\tt int mq\_receive();}
 
 \end{frame}
 
@@ -202,14 +153,44 @@ API Posix para:\\
 
 \end{frame}
 
-
-
 \begin{frame}{Memória compartilhada}
   
   \begin{center}
-    \includegraphics[scale=0.575]{zfig-ipc-shared_memory.pdf}
+    \input{shared-memory}
   \end{center}
 
 \end{frame}
 
-\end{document}
+\begin{frame}
+  \frametitle{Mensagens}
+  \framesubtitle{Comunicação assíncrona}
+  \small
+  Dois ou mais processos podem se comunicar utilizando um sistema
+  comum de fila de mensagens.
+
+  \begin{center}
+  \begin{tikzpicture}
+    \tikzset{mod/.style={rounded corners,text width=1.75cm,draw},
+    send/.style={fill=blue!20},rec/.style={fill=yellow!50}}
+    \node[mod,send] (sp) {Processo emissor};%sending process
+    \node[mod,rec] (rp) [right of=sp,xshift=40mm] {Processo
+      receptor};%receiving process
+    \node[mod,send] (mps) [below of=sp,yshift=-10mm] {Módulo de envio de mensagens};
+    \node[mod,rec] (mpr) [below of=rp,yshift=-10mm] {Módulo de recepção de
+      mensagens};
+    \node[draw,minimum width=1cm,fill=green!20] (type) [below of=mps,yshift=-10mm,xshift=10mm] {Tipo};
+    \node[draw,minimum width=3cm] (mesg) [right of=type,xshift=10mm] {Mensagem};
+    
+    \draw[->,>=latex] (sp) -- (mps);
+    \draw[<-,>=latex] (rp) -- (mpr);
+    \draw[->,>=latex] (0,-5) -- (5,-5);
+    \node at (2.5,-4.75) {\footnotesize fila de mensagens};
+  \end{tikzpicture}
+\end{center}
+
+API Posix para:\\
+ \alert{enviar} mensagens $\rightarrow$ {\tt int mq\_send();}\\
+\alert{receber} mensagens $\rightarrow$ {\tt int mq\_receive();}
+
+\end{frame}
+
